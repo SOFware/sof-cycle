@@ -8,3 +8,4 @@ gem "rake"
 
 gem "rspec"
 gem "debug"
+gem "simplecov"

@@ -1,3 +1,7 @@
+if ENV["CI"]
+  require "simplecov"
+end
+
 require "sof/cycle"
 require "debug"
 
