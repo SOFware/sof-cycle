@@ -14,7 +14,12 @@ If bundler is not being used to manage dependencies, install the gem by executin
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+cycle = SOF::Cycle.load({ volume: 3, kind: :lookback, period: :day, period_count: 3 })
+cycle.to_h # => { volume: 3, kind: :lookback, period: :day, period_count: 3 }
+cycle.notation # => "V3L3D"
+cycle.to_s # => "3x in the prior 3 days"
+```
 
 ## Development
 
