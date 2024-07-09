@@ -3,7 +3,7 @@
 require_relative "lib/sof/cycle/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "SOF-cycle"
+  spec.name = "sof-cycle"
   spec.version = SOF::Cycle::VERSION
   spec.authors = ["Jim Gay"]
   spec.email = ["jim@saturnflyer.com"]
