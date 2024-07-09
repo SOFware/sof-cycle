@@ -8,5 +8,6 @@ gem "rake"
 
 gem "rspec"
 gem "debug"
+gem "reissue"
 gem "simplecov"
 gem "standard"

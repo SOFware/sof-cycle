@@ -9,3 +9,9 @@ RSpec::Core::RakeTask.new(:spec) do |t|
 end
 
 task default: :spec
+
+require "reissue/gem"
+
+Reissue::Task.create do |task|
+  task.version_file = "lib/sof/cycle/version.rb"
+end
