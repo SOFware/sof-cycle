@@ -53,6 +53,7 @@ module SOF
       it "returns true if the notation is recognized" do
         aggregate_failures do
           expect(described_class.new("V1L180D")).to be_valid
+          expect(described_class.new("V1E18M")).to be_valid
           expect(described_class.new("XXX")).not_to be_valid
         end
       end

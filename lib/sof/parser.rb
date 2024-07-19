@@ -14,7 +14,7 @@ module SOF
     extend Forwardable
     PARTS_REGEX = /
       ^(?<vol>V(?<volume>\d*))? # optional volume
-      (?<set>(?<kind>L|C|W) # kind
+      (?<set>(?<kind>L|C|W|E) # kind
       (?<period_count>\d+) # period count
       (?<period_key>D|W|M|Q|Y)?)? # period_key
       (?<from>F(?<from_date>\d{4}-\d{2}-\d{2}))?$ # optional from
