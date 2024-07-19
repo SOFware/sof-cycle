@@ -117,6 +117,14 @@ module SOF
           expect(described_class.new("V1L180D")).not_to be_dormant
           expect(described_class.new("V1L180D")).to be_active
 
+          expect(described_class.new("V1E18M")).to be_dormant_capable
+          expect(described_class.new("V1E18M")).to be_dormant
+          expect(described_class.new("V1E18M")).not_to be_active
+
+          expect(described_class.new("V1E18MF2024-09-09")).to be_dormant_capable
+          expect(described_class.new("V1E18MF2024-09-09")).not_to be_dormant
+          expect(described_class.new("V1E18MF2024-09-09")).to be_active
+
           expect(described_class.new("V1W180D")).to be_dormant_capable
           expect(described_class.new("V1W180D")).to be_dormant
           expect(described_class.new("V1W180D")).not_to be_active

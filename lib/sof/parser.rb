@@ -20,7 +20,7 @@ module SOF
       (?<from>F(?<from_date>\d{4}-\d{2}-\d{2}))?$ # optional from
     /ix
 
-    def self.dormant_capable_kinds = %w[W]
+    def self.dormant_capable_kinds = %w[E W]
 
     def self.for(notation_or_parser)
       return notation_or_parser if notation_or_parser.is_a? self
