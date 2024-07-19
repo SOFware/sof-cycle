@@ -22,10 +22,10 @@ module SOF
 
     def self.dormant_capable_kinds = %w[W]
 
-    def self.for(str_or_notation)
-      return str_or_notation if str_or_notation.is_a? self
+    def self.for(notation_or_parser)
+      return notation_or_parser if notation_or_parser.is_a? self
 
-      new(str_or_notation)
+      new(notation_or_parser)
     end
 
     def self.load(hash)
