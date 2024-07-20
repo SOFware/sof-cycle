@@ -58,7 +58,7 @@ module SOF
     describe "#satisfied_by?(completed_dates, anchor:)" do
       context "when the completions--judged from the <from_date>--satisfy the cycle" do
         it "returns true" do
-          expect(cycle.satisfied_by?(completed_dates, anchor:)).to eq true
+          expect(cycle).to be_satisfied_by(completed_dates, anchor:)
         end
       end
 
@@ -66,7 +66,7 @@ module SOF
         let(:notation) { "V3W180D" }
 
         it "returns false" do
-          expect(cycle.satisfied_by?(completed_dates, anchor:)).to eq false
+          expect(cycle).not_to be_satisfied_by(completed_dates, anchor:)
         end
       end
 
@@ -74,7 +74,7 @@ module SOF
         let(:completed_dates) { [] }
 
         it "returns false" do
-          expect(cycle.satisfied_by?(completed_dates, anchor:)).to eq false
+          expect(cycle).not_to be_satisfied_by(completed_dates, anchor:)
         end
       end
     end
