@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "../cycle"
+require_relative "cycle"
 require "active_support/core_ext/hash/keys"
 require "active_support/core_ext/object/blank"
 require "active_support/core_ext/object/inclusion"
@@ -10,7 +10,7 @@ require "active_support/isolated_execution_state"
 module SOF
   # This class is not intended to be referenced directly.
   # This is an internal implementation of Cycle behavior.
-  class Cycle::Parser
+  class Parser
     extend Forwardable
     PARTS_REGEX = /
       ^(?<vol>V(?<volume>\d*))? # optional volume

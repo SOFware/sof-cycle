@@ -2,7 +2,7 @@
 
 require_relative "cycle/version"
 require "forwardable"
-require_relative "cycle/parser"
+require_relative "parser"
 require_relative "cycle/time_span"
 require "active_support/core_ext/date/conversions"
 require "active_support/core_ext/string/filters"
