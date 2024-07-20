@@ -1,11 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "cycle/version"
-require "forwardable"
 require_relative "parser"
-require_relative "time_span"
-require "active_support/core_ext/date/conversions"
-require "active_support/core_ext/string/filters"
 
 module SOF
   class Cycle
