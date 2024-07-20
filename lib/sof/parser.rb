@@ -50,7 +50,7 @@ module SOF
 
     # Return a TimeSpan object for the period and period_count
     def time_span
-      @time_span ||= Cycle::TimeSpan.for(period_count, period_key)
+      @time_span ||= TimeSpan.for(period_count, period_key)
     end
 
     def valid? = match.present?

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "../cycle"
+require_relative "cycle"
 require "active_support/deprecator"
 require "active_support/deprecation"
 require "active_support/core_ext/numeric/time"
@@ -9,7 +9,7 @@ require "active_support/core_ext/string/conversions"
 module SOF
   # This class is not intended to be referenced directly.
   # This is an internal implementation of Cycle behavior.
-  class Cycle::TimeSpan
+  class TimeSpan
     extend Forwardable
     # TimeSpan objects map Cycle notations to behaviors for their periods
     #
