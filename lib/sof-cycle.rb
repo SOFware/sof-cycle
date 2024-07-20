@@ -6,6 +6,7 @@ require "active_support/core_ext/integer/time"
 require "active_support/core_ext/string/conversions"
 require "active_support/core_ext/date/conversions"
 require "active_support/core_ext/string/filters"
+require "active_support/inflector"
 
 require_relative "sof/cycle/version"
 require_relative "sof/cycle"
