@@ -3,7 +3,7 @@
 require "spec_helper"
 
 module SOF
-  RSpec.describe SOF::Cycle::TimeSpan, type: :value do
+  RSpec.describe SOF::TimeSpan, type: :value do
     describe ".notation" do
       it "accepts a hash and returns a string notation" do
         aggregate_failures do

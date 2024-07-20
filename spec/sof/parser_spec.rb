@@ -3,9 +3,9 @@
 require "spec_helper"
 
 module SOF
-  RSpec.describe Cycle::Parser, type: :value do
+  RSpec.describe Parser, type: :value do
     describe ".load(hash)" do
-      it "returns a Notation instance" do
+      it "returns a Parser instance" do
         hash = {
           volume: 1,
           kind: "L",
@@ -16,23 +16,23 @@ module SOF
       end
     end
 
-    describe ".for(str_or_notation)" do
+    describe ".for(notation_or_parser)" do
       context "when given a string" do
-        it "returns a Notation instance" do
+        it "returns a Parser instance" do
           expect(described_class.for("V1L180D")).to be_a(described_class)
         end
       end
 
-      context "when given a Notation object" do
+      context "when given a Parser object" do
         it "returns the object" do
-          notation = described_class.new("V1L180D")
-          expect(described_class.for(notation)).to eq notation
+          parser = described_class.new("V1L180D")
+          expect(described_class.for(parser)).to eq parser
         end
       end
     end
 
     describe "#initialize" do
-      it "handles any case" do
+      it "is case-insensitive" do
         aggregate_failures do
           expect(described_class.new("V1l180D").inspect).to eq "V1L180D"
           expect(described_class.new("V1L180d").to_s).to eq "V1L180D"

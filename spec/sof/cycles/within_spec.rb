@@ -3,7 +3,7 @@
 require "spec_helper"
 
 module SOF
-  RSpec.describe Cycle::Within, type: :value do
+  RSpec.describe Cycles::Within, type: :value do
     let(:cycle) { Cycle.for(notation) }
     let(:notation) { "V2W180DF#{from_date}" }
     let(:completed_dates) do

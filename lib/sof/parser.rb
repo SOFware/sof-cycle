@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "../cycle"
+require_relative "cycle"
 require "active_support/core_ext/hash/keys"
 require "active_support/core_ext/object/blank"
 require "active_support/core_ext/object/inclusion"
@@ -10,7 +10,7 @@ require "active_support/isolated_execution_state"
 module SOF
   # This class is not intended to be referenced directly.
   # This is an internal implementation of Cycle behavior.
-  class Cycle::Parser
+  class Parser
     extend Forwardable
     PARTS_REGEX = /
       ^(?<vol>V(?<volume>\d*))? # optional volume
@@ -22,10 +22,10 @@ module SOF
 
     def self.dormant_capable_kinds = %w[W]
 
-    def self.for(str_or_notation)
-      return str_or_notation if str_or_notation.is_a? self
+    def self.for(notation_or_parser)
+      return notation_or_parser if notation_or_parser.is_a? self
 
-      new(str_or_notation)
+      new(notation_or_parser)
     end
 
     def self.load(hash)
@@ -50,7 +50,7 @@ module SOF
 
     # Return a TimeSpan object for the period and period_count
     def time_span
-      @time_span ||= Cycle::TimeSpan.for(period_count, period_key)
+      @time_span ||= TimeSpan.for(period_count, period_key)
     end
 
     def valid? = match.present?

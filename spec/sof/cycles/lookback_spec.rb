@@ -3,7 +3,7 @@
 require "spec_helper"
 
 module SOF
-  RSpec.describe Cycle::Lookback, type: :value do
+  RSpec.describe Cycles::Lookback, type: :value do
     let(:cycle) { Cycle.for(notation) }
     let(:notation) { "V2L180D" }
     let(:anchor) { "2020-08-01".to_date }

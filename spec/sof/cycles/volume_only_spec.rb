@@ -3,7 +3,7 @@
 require "spec_helper"
 
 module SOF
-  RSpec.describe Cycle::VolumeOnly, type: :value do
+  RSpec.describe Cycles::VolumeOnly, type: :value do
     let(:cycle) { Cycle.for(notation) }
     let(:notation) { "V2" }
     let(:completed_dates) do

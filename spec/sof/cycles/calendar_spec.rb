@@ -3,7 +3,7 @@
 require "spec_helper"
 
 module SOF
-  RSpec.describe Cycle::Calendar, type: :value do
+  RSpec.describe Cycles::Calendar, type: :value do
     let(:cycle) { Cycle.for(notation) }
     let(:notation) { "V2C1Y" }
     let(:completed_dates) do
