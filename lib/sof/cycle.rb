@@ -24,7 +24,7 @@ module SOF
     attr_reader :parser
 
     delegate [:activated_notation, :volume, :from, :from_date, :time_span, :period,
-      :humanized_period, :period_key, :active?] => :@parser
+      :humanized_period, :period_key, :dormant?, :active?] => :@parser
     delegate [:kind, :volume_only?, :valid_periods] => "self.class"
     delegate [:period_count, :duration] => :time_span
 
