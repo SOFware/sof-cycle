@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
 require "spec_helper"
+require_relative "shared_examples"
 
 module SOF
   RSpec.describe Cycles::Calendar, type: :value do
-    let(:cycle) { Cycle.for(notation) }
+    subject(:cycle) { Cycle.for(notation) }
+
     let(:notation) { "V2C1Y" }
     let(:completed_dates) do
       [
@@ -20,6 +22,15 @@ module SOF
     let(:early_date) { anchor - 150.days }
     let(:out_of_window_date) { anchor - 11.months }
     let(:anchor) { "2020-08-01".to_date }
+
+    it_behaves_like "#kind returns", :calendar
+    it_behaves_like "#valid_periods are", %w[M Q Y]
+    it_behaves_like "#to_s returns", "2x every 1 calendar year"
+    it_behaves_like "#volume returns the volume"
+    it_behaves_like "#notation returns the notation"
+    it_behaves_like "#as_json returns the notation"
+    it_behaves_like "it computes #final_date(given)",
+      given: "1971-01-01", returns: "1971-12-31".to_date
 
     describe "#covered_dates" do
       it "given an anchor date, returns dates that fall within it's window" do

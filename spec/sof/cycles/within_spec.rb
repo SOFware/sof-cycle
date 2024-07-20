@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
 require "spec_helper"
+require_relative "shared_examples"
 
 module SOF
   RSpec.describe Cycles::Within, type: :value do
-    let(:cycle) { Cycle.for(notation) }
+    subject(:cycle) { Cycle.for(notation) }
+
     let(:notation) { "V2W180DF#{from_date}" }
     let(:completed_dates) do
       [
@@ -21,6 +23,15 @@ module SOF
     let(:from_date) { "2020-08-01".to_date }
 
     let(:anchor) { "2999-08-01".to_date } # anchor never matters for this cycle
+
+    it_behaves_like "#kind returns", :within
+    it_behaves_like "#valid_periods are", %w[D W M Y]
+    it_behaves_like "#to_s returns", "2x within 2020-08-01 - 2021-01-28"
+    it_behaves_like "#volume returns the volume"
+    it_behaves_like "#notation returns the notation"
+    it_behaves_like "#as_json returns the notation"
+    it_behaves_like "it computes #final_date(given)",
+      given: "_", returns: ("2020-08-01".to_date + 180.days)
 
     describe "#start_date" do
       it "returns the <from_date>" do
@@ -81,18 +92,6 @@ module SOF
         it "returns nil" do
           expect(cycle.expiration_of(completed_dates)).to be_nil
         end
-      end
-    end
-
-    describe "#volume" do
-      it "returns the volume specified by the notation" do
-        expect(cycle.volume).to eq(2)
-      end
-    end
-
-    describe "#notation" do
-      it "returns the string representation of itself" do
-        expect(cycle.notation).to eq(notation)
       end
     end
   end
