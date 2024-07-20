@@ -78,7 +78,7 @@ module SOF
     # @return [Cycle] a Cycle object representing the provide string notation
     def self.for(notation)
       return notation if notation.is_a? Cycle
-      return notation if notation.is_a? Cycle::Dormant
+      return notation if notation.is_a? Cycles::Dormant
       parser = Parser.new(notation)
       unless parser.valid?
         raise InvalidInput, "'#{notation}' is not a valid input"
@@ -89,7 +89,7 @@ module SOF
       end.new(notation, parser:)
       return cycle if parser.active?
 
-      Cycle::Dormant.new(cycle, parser:)
+      Cycles::Dormant.new(cycle, parser:)
     end
 
     # Return the appropriate class for the give notation id
@@ -203,33 +203,6 @@ module SOF
     end
 
     def as_json(...) = notation
-
-    class Dormant
-      def initialize(cycle, parser:)
-        @cycle = cycle
-        @parser = parser
-      end
-
-      attr_reader :cycle, :parser
-
-      def to_s
-        cycle.to_s + " (dormant)"
-      end
-
-      def covered_dates(...) = []
-
-      def expiration_of(...) = nil
-
-      def satisfied_by?(...) = false
-
-      def cover?(...) = false
-
-      def method_missing(method, ...) = cycle.send(method, ...)
-
-      def respond_to_missing?(method, include_private = false)
-        cycle.respond_to?(method, include_private)
-      end
-    end
 
     class Within < self
       @volume_only = false
