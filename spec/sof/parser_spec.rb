@@ -53,6 +53,7 @@ module SOF
       it "returns true if the notation is recognized" do
         aggregate_failures do
           expect(described_class.new("V1L180D")).to be_valid
+          expect(described_class.new("V1E18M")).to be_valid
           expect(described_class.new("XXX")).not_to be_valid
         end
       end
@@ -99,6 +100,12 @@ module SOF
           expect(described_class.new("V1W180DF2024-09-09").activated_notation(date)).to eq(
             "V1W180DF2024-05-06"
           )
+          expect(described_class.new("V1E18M").activated_notation(date)).to eq(
+            "V1E18MF2024-05-06"
+          )
+          expect(described_class.new("V1E18MF2024-09-09").activated_notation(date)).to eq(
+            "V1E18MF2024-05-06"
+          )
         end
       end
     end
@@ -109,6 +116,14 @@ module SOF
           expect(described_class.new("V1L180D")).not_to be_dormant_capable
           expect(described_class.new("V1L180D")).not_to be_dormant
           expect(described_class.new("V1L180D")).to be_active
+
+          expect(described_class.new("V1E18M")).to be_dormant_capable
+          expect(described_class.new("V1E18M")).to be_dormant
+          expect(described_class.new("V1E18M")).not_to be_active
+
+          expect(described_class.new("V1E18MF2024-09-09")).to be_dormant_capable
+          expect(described_class.new("V1E18MF2024-09-09")).not_to be_dormant
+          expect(described_class.new("V1E18MF2024-09-09")).to be_active
 
           expect(described_class.new("V1W180D")).to be_dormant_capable
           expect(described_class.new("V1W180D")).to be_dormant
@@ -126,8 +141,16 @@ module SOF
         aggregate_failures do
           expect(described_class.new("V1L180D").from).to be_nil
           expect(described_class.new("V1L180D").from_date).to be_nil
+
+          expect(described_class.new("V1W10D").from).to be_nil
+          expect(described_class.new("V1W10D").from_date).to be_nil
           expect(described_class.new("V1W10DF2024-04-09").from).to eq "F2024-04-09"
           expect(described_class.new("V1W10DF2024-04-09").from_date).to eq "2024-04-09"
+
+          expect(described_class.new("V1E18M").from).to be_nil
+          expect(described_class.new("V1E18M").from_date).to be_nil
+          expect(described_class.new("V1E18MF2024-04-09").from).to eq "F2024-04-09"
+          expect(described_class.new("V1E18MF2024-04-09").from_date).to eq "2024-04-09"
         end
       end
     end
@@ -166,6 +189,7 @@ module SOF
     describe "#kind" do
       it "returns match[:kind]" do
         aggregate_failures do
+          expect(described_class.new("V1E18M").kind).to eq "E"
           expect(described_class.new("V1L180D").kind).to eq "L"
           expect(described_class.new("V1C1Y").kind).to eq "C"
           expect(described_class.new("V1").kind).to be_nil
@@ -176,7 +200,10 @@ module SOF
     describe "#parses?" do
       it "returns true if the object parses the notation_id" do
         aggregate_failures do
+          expect(described_class.new("V1E18M").parses?("E")).to be true
+          expect(described_class.new("V1E18M").parses?("L")).to be false
           expect(described_class.new("V1L180D").parses?("L")).to be true
+          expect(described_class.new("V1L180D").parses?("C")).to be false
           expect(described_class.new("V1C1Y").parses?("C")).to be true
           expect(described_class.new("V1").parses?(nil)).to be true
         end
