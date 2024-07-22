@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "cycle/parser"
+require_relative "cycle/time_span"
 
 module SOF
   class Cycle
