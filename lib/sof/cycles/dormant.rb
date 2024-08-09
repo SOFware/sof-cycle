@@ -10,6 +10,10 @@ module SOF
 
       attr_reader :cycle, :parser
 
+      def kind = :dormant
+
+      def dormant? = true
+
       def to_s
         cycle.to_s + " (dormant)"
       end
