@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Basic example in README.md
+- Add `Cycles::EndOf` to handle cycles that cover through the end of the nth
+  subsequent period
+- Add predicate methods for each `Cycle` subclass. E.g. `#dormant?`, `#within?`, etc
+- Refactor into namespaces
 
 ## [0.1.0] - 2024-07-09
 
