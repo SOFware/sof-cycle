@@ -3,6 +3,7 @@
 shared_examples_for "#kind returns" do |expected|
   it "returns the correct kind" do
     expect(subject.kind).to eq(expected)
+    expect(subject.public_send(:"#{expected}?")).to be true
   end
 end
 

@@ -24,9 +24,11 @@ module SOF
     attr_reader :parser
 
     delegate [:activated_notation, :volume, :from, :from_date, :time_span, :period,
-      :humanized_period, :period_key, :dormant?, :active?] => :@parser
+      :humanized_period, :period_key, :active?] => :@parser
     delegate [:kind, :volume_only?, :valid_periods] => "self.class"
     delegate [:period_count, :duration] => :time_span
+    delegate [:calendar?, :dormant?, :end_of?, :lookback?, :volume_only?,
+      :within?] => :kind_inquiry
 
     # Turn a cycle or notation string into a hash
     def self.dump(cycle_or_string)
@@ -144,6 +146,8 @@ module SOF
         #{valid_periods.join(", ")}
       ERR
     end
+
+    def kind_inquiry = ActiveSupport::StringInquirer.new(kind.to_s)
 
     def validate_period
       return if valid_periods.empty?
