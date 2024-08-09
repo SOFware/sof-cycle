@@ -33,6 +33,12 @@ module SOF
     it_behaves_like "it computes #final_date(given)",
       given: "_", returns: ("2020-08-01".to_date + 180.days)
 
+    describe "#recurring?" do
+      it "does not repeat" do
+        expect(cycle).not_to be_recurring
+      end
+    end
+
     describe "#start_date" do
       it "returns the <from_date>" do
         expect(cycle.start_date).to eq(from_date)

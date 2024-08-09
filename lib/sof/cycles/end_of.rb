@@ -8,6 +8,8 @@ module SOF
       @kind = :end_of
       @valid_periods = %w[W M Q Y]
 
+      def self.recurring? = true
+
       def to_s
         return dormant_to_s if dormant?
 

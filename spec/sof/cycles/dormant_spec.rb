@@ -29,6 +29,12 @@ module SOF
 
     it_behaves_like "#kind returns", :dormant
 
+    describe "#recurring?" do
+      it "does not repeat" do
+        expect(within_cycle).not_to be_recurring
+      end
+    end
+
     describe "#kind & #kind?" do
       it "returns the correct kind" do
         expect(within_cycle.kind).to eq(:dormant)

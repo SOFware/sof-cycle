@@ -19,6 +19,8 @@ module SOF
         end
       end
 
+      def self.recurring? = false
+
       def to_s = "#{volume}x total"
 
       def covered_dates(dates, ...) = dates
