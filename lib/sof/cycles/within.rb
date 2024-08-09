@@ -8,6 +8,8 @@ module SOF
       @kind = :within
       @valid_periods = %w[D W M Y]
 
+      def self.recurring? = false
+
       def to_s = "#{volume}x within #{date_range}"
 
       def date_range

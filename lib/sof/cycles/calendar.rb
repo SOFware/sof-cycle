@@ -12,6 +12,8 @@ module SOF
         def frame_of_reference = "total"
       end
 
+      def self.recurring? = true
+
       def to_s
         "#{volume}x every #{period_count} calendar #{humanized_period}"
       end

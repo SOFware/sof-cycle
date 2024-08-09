@@ -25,7 +25,7 @@ module SOF
 
     delegate [:activated_notation, :volume, :from, :from_date, :time_span, :period,
       :humanized_period, :period_key, :active?] => :@parser
-    delegate [:kind, :volume_only?, :valid_periods] => "self.class"
+    delegate [:kind, :recurring?, :volume_only?, :valid_periods] => "self.class"
     delegate [:period_count, :duration] => :time_span
     delegate [:calendar?, :dormant?, :end_of?, :lookback?, :volume_only?,
       :within?] => :kind_inquiry
@@ -130,10 +130,11 @@ module SOF
     @kind = nil
     @valid_periods = []
 
-    def self.volume_only? = @volume_only
-
     class << self
       attr_reader :notation_id, :kind, :valid_periods
+      def volume_only? = @volume_only
+
+      def recurring? = raise "#{name} must implement #{__method__}"
     end
 
     # Raises an error if the given period isn't in the list of valid periods.

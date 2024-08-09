@@ -8,6 +8,8 @@ module SOF
       @kind = :lookback
       @valid_periods = %w[D W M Y]
 
+      def self.recurring? = true
+
       def to_s = "#{volume}x in the prior #{period_count} #{humanized_period}"
 
       def volume_to_delay_expiration(completion_dates, anchor:)

@@ -10,6 +10,8 @@ module SOF
 
       attr_reader :cycle, :parser
 
+      def self.recurring? = false
+
       def kind = :dormant
 
       def dormant? = true

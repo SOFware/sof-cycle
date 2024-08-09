@@ -32,6 +32,12 @@ module SOF
     it_behaves_like "it computes #final_date(given)",
       given: "1971-01-01", returns: "1971-12-31".to_date
 
+    describe "#recurring?" do
+      it "repeats" do
+        expect(cycle).to be_recurring
+      end
+    end
+
     describe "#covered_dates" do
       it "given an anchor date, returns dates that fall within it's window" do
         expect(cycle.covered_dates(completed_dates, anchor:)).to eq([

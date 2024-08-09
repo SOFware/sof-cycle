@@ -32,6 +32,12 @@ module SOF
     it_behaves_like "#kind returns", :end_of
     it_behaves_like "#valid_periods are", %w[W M Q Y]
 
+    describe "#recurring?" do
+      it "repeats" do
+        expect(cycle).to be_recurring
+      end
+    end
+
     @end_date = ("2020-01-01".to_date + 18.months).end_of_month
     it_behaves_like "#to_s returns",
       "2x by #{@end_date.to_fs(:american)}"
