@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
 require "spec_helper"
+require_relative "shared_examples"
 
 module SOF
   RSpec.describe Cycles::Dormant, type: :value do
-    let(:within_cycle) { Cycle.for(within_notation) }
+    subject(:within_cycle) { Cycle.for(within_notation) }
+
     let(:within_notation) { "V2W180D" }
 
     let(:end_of_cycle) { Cycle.for(end_of_notation) }
@@ -24,6 +26,15 @@ module SOF
     let(:middle_date) { anchor - 70.days }
     let(:early_date) { anchor - 150.days }
     let(:out_of_window_date) { anchor - 182.days }
+
+    it_behaves_like "#kind returns", :dormant
+
+    describe "#kind & #kind?" do
+      it "returns the correct kind" do
+        expect(within_cycle.kind).to eq(:dormant)
+        expect(within_cycle).to be_dormant
+      end
+    end
 
     describe "#activated_notation" do
       it "appends the from data to the notation" do
