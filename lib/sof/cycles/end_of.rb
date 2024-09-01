@@ -17,7 +17,7 @@ module SOF
       end
 
       def final_date(_ = nil) = time_span
-        .end_date(start_date)
+        .end_date(start_date - 1.send(period))
         .end_of_month
 
       def start_date(_ = nil) = from_date.to_date

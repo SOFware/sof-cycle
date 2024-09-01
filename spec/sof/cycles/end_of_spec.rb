@@ -10,7 +10,7 @@ module SOF
     let(:notation) { "V2E18MF#{from_date}" }
     let(:anchor) { nil }
 
-    let(:end_date) { (from_date.to_date + 18.months).end_of_month }
+    let(:end_date) { (from_date.to_date + 17.months).end_of_month }
     let(:from_date) { "2020-01-01" }
 
     let(:completed_dates) do
@@ -38,7 +38,7 @@ module SOF
       end
     end
 
-    @end_date = ("2020-01-01".to_date + 18.months).end_of_month
+    @end_date = ("2020-01-01".to_date + 17.months).end_of_month
     it_behaves_like "#to_s returns",
       "2x by #{@end_date.to_fs(:american)}"
 
@@ -52,7 +52,7 @@ module SOF
     it_behaves_like "#notation returns the notation"
     it_behaves_like "#as_json returns the notation"
     it_behaves_like "it computes #final_date(given)",
-      given: nil, returns: ("2020-01-01".to_date + 18.months).end_of_month
+      given: nil, returns: ("2020-01-01".to_date + 17.months).end_of_month
 
     describe "#covered_dates" do
       it "given an anchor date, returns dates that fall within it's window" do
