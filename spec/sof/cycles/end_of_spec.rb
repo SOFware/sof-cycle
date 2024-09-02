@@ -10,8 +10,8 @@ module SOF
     let(:notation) { "V2E18MF#{from_date}" }
     let(:anchor) { nil }
 
-    let(:end_date) { (from_date.to_date + 17.months).end_of_month }
-    let(:from_date) { "2020-01-01" }
+    let(:end_date) { (from_date + 17.months).end_of_month }
+    let(:from_date) { "2020-01-01".to_date }
 
     let(:completed_dates) { [] }
 
@@ -39,6 +39,7 @@ module SOF
     it_behaves_like "#as_json returns the notation"
     it_behaves_like "it computes #final_date(given)",
       given: nil, returns: ("2020-01-01".to_date + 17.months).end_of_month
+    it_behaves_like "last_completed is", :from_date
 
     describe "#covered_dates" do
       let(:completed_dates) do
@@ -51,10 +52,10 @@ module SOF
           too_late_date
         ]
       end
-      let(:recent_date) { from_date.to_date + 17.months }
-      let(:middle_date) { from_date.to_date + 2.months }
-      let(:early_date) { from_date.to_date + 1.month }
-      let(:too_early_date) { from_date.to_date - 1.day }
+      let(:recent_date) { from_date + 17.months }
+      let(:middle_date) { from_date + 2.months }
+      let(:early_date) { from_date + 1.month }
+      let(:too_early_date) { from_date - 1.day }
       let(:too_late_date) { end_date + 1.day }
 
       let(:anchor) { "2021-06-29".to_date }

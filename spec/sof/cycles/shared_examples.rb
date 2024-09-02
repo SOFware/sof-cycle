@@ -43,3 +43,11 @@ shared_examples_for "it computes #final_date(given)" do |given:, returns:|
     expect(subject.final_date(given)).to eq(returns)
   end
 end
+
+shared_examples_for "last_completed is" do |symbol|
+  it "returns the correct date" do
+    expected = send(symbol)
+    dates = completed_dates + [nil, "1999-01-01"]
+    expect(subject.last_completed(dates)).to eq(expected)
+  end
+end
