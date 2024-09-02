@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.4] - Unreleased
 
+### Added
+
+- `Cycle#last_completed` to return the last completion given the cycle and an array of dates
+
 ## [0.1.3] - 2024-09-01
 
 ### Fixed
