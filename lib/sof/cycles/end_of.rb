@@ -25,7 +25,7 @@ module SOF
       end
 
       # Always returns the from_date
-      def last_completed(_) = from_date.to_date
+      def last_completed(_ = nil) = from_date&.to_date
 
       # Returns the expiration date for the cycle
       #
