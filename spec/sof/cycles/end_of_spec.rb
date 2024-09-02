@@ -39,7 +39,20 @@ module SOF
     it_behaves_like "#as_json returns the notation"
     it_behaves_like "it computes #final_date(given)",
       given: nil, returns: ("2020-01-01".to_date + 17.months).end_of_month
-    it_behaves_like "last_completed is", :from_date
+
+    describe "#last_completed" do
+      context "with an activated cycle" do
+        it_behaves_like "last_completed is", :from_date
+      end
+
+      context "with a dormant cycle" do
+        let(:notation) { "V2E18M" }
+
+        it "returns nil" do
+          expect(cycle.last_completed).to be_nil
+        end
+      end
+    end
 
     describe "#covered_dates" do
       let(:completed_dates) do
