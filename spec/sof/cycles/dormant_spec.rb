@@ -29,6 +29,20 @@ module SOF
 
     it_behaves_like "#kind returns", :dormant
 
+    describe "#last_completed" do
+      context "with a dormant Within cycle" do
+        it "returns nil" do
+          expect(within_cycle.last_completed(completed_dates)).to eq recent_date
+        end
+      end
+
+      context "with a dormant EndOf cycle" do
+        it "returns nil" do
+          expect(end_of_cycle.last_completed).to be_nil
+        end
+      end
+    end
+
     describe "#recurring?" do
       it "does not repeat" do
         expect(within_cycle).not_to be_recurring
