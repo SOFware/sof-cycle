@@ -24,6 +24,9 @@ module SOF
         "#{volume}x by #{final_date.to_fs(:american)}"
       end
 
+      # Always returns the from_date
+      def last_completed(_) = from_date.to_date
+
       # Returns the expiration date for the cycle
       #
       # @param [nil] _ Unused parameter, maintained for compatibility
