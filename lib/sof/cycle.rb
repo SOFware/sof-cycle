@@ -162,6 +162,9 @@ module SOF
     # Cycles are considered equal if their hash representations are equal
     def ==(other) = to_h == other.to_h
 
+    # Return the most recent completion date from the supplied array of dates
+    def last_completed(dates) = dates.compact.map(&:to_date).max
+
     # From the supplied anchor date, are there enough in-window completions to
     # satisfy the cycle?
     #

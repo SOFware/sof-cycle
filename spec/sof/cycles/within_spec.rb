@@ -32,6 +32,7 @@ module SOF
     it_behaves_like "#as_json returns the notation"
     it_behaves_like "it computes #final_date(given)",
       given: "_", returns: ("2020-08-01".to_date + 180.days)
+    it_behaves_like "last_completed is", :too_late
 
     describe "#recurring?" do
       it "does not repeat" do

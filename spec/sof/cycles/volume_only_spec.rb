@@ -29,6 +29,7 @@ module SOF
     it_behaves_like "#as_json returns the notation"
     it_behaves_like "it computes #final_date(given)",
       given: "2003-03-08", returns: nil
+    it_behaves_like "last_completed is", :recent_date
 
     describe "#recurring?" do
       it "does not repeat" do
