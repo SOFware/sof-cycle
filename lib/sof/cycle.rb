@@ -165,6 +165,8 @@ module SOF
     # Return the most recent completion date from the supplied array of dates
     def last_completed(dates) = dates.compact.map(&:to_date).max
 
+    def extend_period(_ = nil) = self
+
     # From the supplied anchor date, are there enough in-window completions to
     # satisfy the cycle?
     #

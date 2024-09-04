@@ -51,3 +51,9 @@ shared_examples_for "last_completed is" do |symbol|
     expect(subject.last_completed(dates)).to eq(expected)
   end
 end
+
+shared_examples_for "it cannot be extended" do
+  it "returns itself" do
+    expect(subject.extend_period(999)).to eq(subject)
+  end
+end

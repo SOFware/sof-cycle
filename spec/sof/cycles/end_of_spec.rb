@@ -39,6 +39,7 @@ module SOF
     it_behaves_like "#as_json returns the notation"
     it_behaves_like "it computes #final_date(given)",
       given: nil, returns: ("2020-01-01".to_date + 17.months).end_of_month
+    it_behaves_like "it cannot be extended"
 
     describe "#last_completed" do
       context "with an activated cycle" do

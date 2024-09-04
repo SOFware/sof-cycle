@@ -34,6 +34,17 @@ module SOF
       given: "_", returns: ("2020-08-01".to_date + 180.days)
     it_behaves_like "last_completed is", :too_late
 
+    describe "#extend_period" do
+      it "increases the period by the given amount" do
+        aggregate_failures do
+          expect(cycle.notation).to eq("V2W180DF2020-08-01")
+
+          new_cycle = cycle.extend_period(30)
+          expect(new_cycle.notation).to eq("V2W210DF2020-08-01")
+        end
+      end
+    end
+
     describe "#recurring?" do
       it "does not repeat" do
         expect(cycle).not_to be_recurring

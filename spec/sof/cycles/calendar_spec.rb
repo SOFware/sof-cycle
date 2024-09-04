@@ -32,6 +32,7 @@ module SOF
     it_behaves_like "it computes #final_date(given)",
       given: "1971-01-01", returns: "1971-12-31".to_date
     it_behaves_like "last_completed is", :recent_date
+    it_behaves_like "it cannot be extended"
 
     describe "#recurring?" do
       it "repeats" do
