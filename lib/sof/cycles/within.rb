@@ -12,6 +12,14 @@ module SOF
 
       def to_s = "#{volume}x within #{date_range}"
 
+      def extend_period(count)
+        Cycle.for(
+          Parser.load(
+            parser.to_h.merge(period_count: period_count + count)
+          ).to_s
+        )
+      end
+
       def date_range
         return humanized_span unless active?
 
