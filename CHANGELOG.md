@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.7] - Unreleased
 
+### Added
+
+- `Cycle#considered_dates` to get the subset of `#covered_dates` that are
+  considered for the cycle's calculations.
+
+### Fixed
+
+- `Cycles::Lookback.volume_to_delay_expiration` now computes correctly when the
+  `#considered_dates` is smaller than the `#covered_dates` of the cycle.
+
 ## [0.1.6] - 2024-09-04
 
 ### Added
