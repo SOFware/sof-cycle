@@ -51,6 +51,28 @@ module SOF
       end
     end
 
+    describe "#considered_dates" do
+      let(:completed_dates) do
+        [
+          recent_date,
+          middle_date,
+          middle_date,
+          early_date,
+          early_date,
+          out_of_window_date
+        ]
+      end
+      let(:notation) { "V3L180D" }
+
+      it "returns {volume} most recent of the #covered_dates" do
+        expect(cycle.considered_dates(completed_dates, anchor:)).to eq([
+          recent_date,
+          middle_date,
+          middle_date
+        ])
+      end
+    end
+
     describe "#satisfied_by?(completed_dates, anchor:)" do
       context "when the completions--judged from the anchor--satisfy the cycle" do
         it "returns true" do
