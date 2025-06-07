@@ -13,8 +13,12 @@ module SOF
       def to_s = "#{volume}x in the prior #{period_count} #{humanized_period}"
 
       def volume_to_delay_expiration(completion_dates, anchor:)
-        oldest_relevant_completion = completion_dates.min
-        [completion_dates.count(oldest_relevant_completion), volume].min
+        relevant_dates = considered_dates(completion_dates, anchor:)
+        return unless satisfied_by?(relevant_dates, anchor:)
+
+        # To move the expiration date, we need to displace each occurance of the
+        # oldest date within #considered_dates.
+        relevant_dates.count(relevant_dates.min)
       end
 
       # "Absent further completions, you go red on this date"
