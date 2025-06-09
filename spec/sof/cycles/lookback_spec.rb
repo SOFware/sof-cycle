@@ -51,6 +51,28 @@ module SOF
       end
     end
 
+    describe "#considered_dates" do
+      let(:completed_dates) do
+        [
+          recent_date,
+          middle_date,
+          middle_date,
+          early_date,
+          early_date,
+          out_of_window_date
+        ]
+      end
+      let(:notation) { "V3L180D" }
+
+      it "returns {volume} most recent of the #covered_dates" do
+        expect(cycle.considered_dates(completed_dates, anchor:)).to eq([
+          recent_date,
+          middle_date,
+          middle_date
+        ])
+      end
+    end
+
     describe "#satisfied_by?(completed_dates, anchor:)" do
       context "when the completions--judged from the anchor--satisfy the cycle" do
         it "returns true" do
@@ -93,6 +115,56 @@ module SOF
 
         it "returns nil" do
           expect(cycle.expiration_of(completed_dates)).to be_nil
+        end
+      end
+    end
+
+    describe "#volume_to_delay_expiration(completed_dates, anchor:)" do
+      let(:notation) { "V4L6M" }
+
+      context "when the completions currently satisfy the cycle" do
+        let(:completed_dates) do
+          [
+            anchor - 1.day,
+            anchor - 5.months,
+            anchor - 5.months,
+            anchor - 5.months,
+            anchor - 5.months,
+            anchor - 1.year
+          ]
+        end
+
+        it "returns the volume needed to delay expiration" do
+          expect(cycle.volume_to_delay_expiration(completed_dates, anchor:)).to eq(3)
+        end
+
+        context "when the considered dates are < the covered_dates" do
+          let(:completed_dates) do
+            [
+              anchor - 1.day,
+              anchor - 3.months,
+              anchor - 3.months,
+              anchor - 3.months,
+              anchor - 5.months,
+              anchor - 5.months,
+              anchor - 1.year
+            ]
+          end
+
+          it "returns the volume needed to delay expiration" do
+            # The expiration only considers the `anchor - 3.months` and more recent
+            # completions, so how many new completions are needed to result in
+            # a more recent oldest-of-considered-datex?
+            expect(cycle.volume_to_delay_expiration(completed_dates, anchor:)).to eq(3)
+          end
+        end
+      end
+
+      context "when the completions currently do not satisfy the cycle" do
+        let(:completed_dates) { Array.new(6, anchor - 1.year) }
+
+        it "returns nil" do
+          expect(cycle.volume_to_delay_expiration(completed_dates, anchor:)).to be_nil
         end
       end
     end

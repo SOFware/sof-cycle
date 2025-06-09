@@ -175,6 +175,10 @@ module SOF
       covered_dates(completion_dates, anchor:).size >= volume
     end
 
+    def considered_dates(completion_dates, anchor: Date.current)
+      covered_dates(completion_dates, anchor:).max_by(volume) { _1 }
+    end
+
     def covered_dates(dates, anchor: Date.current)
       dates.select do |date|
         cover?(date, anchor:)
