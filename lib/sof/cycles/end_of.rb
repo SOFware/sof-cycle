@@ -18,6 +18,14 @@ module SOF
 
       def self.recurring? = true
 
+      def self.description
+        "End of - occurrences by the end of a time period"
+      end
+
+      def self.examples
+        ["V1E1M - once by the end of next month", "V2E2Q - twice by the end of 2 quarters"]
+      end
+
       def to_s
         return dormant_to_s if dormant?
 

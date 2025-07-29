@@ -99,12 +99,26 @@ module SOF
         end || raise(InvalidKind, "':#{sym}' is not a valid kind of Cycle")
       end
 
-      def cycle_handlers = @cycle_handlers ||= Set.new
-
-      def inherited(klass) = cycle_handlers << klass
-
-      def handles?(sym)
-        sym && kind == sym.to_sym
+      # Return a legend explaining all notation components
+      #
+      # @return [Hash] hash with notation components organized by category
+      def legend
+        {
+          "quantity" => {
+            "V" => {
+              description: "Volume - the number of times something should occur",
+              examples: ["V1L1D - once in the prior 1 day", "V3L3D - three times in the prior 3 days", "V10L10D - ten times in the prior 10 days"]
+            }
+          },
+          "kind" => build_kind_legend,
+          "period" => build_period_legend,
+          "date" => {
+            "F" => {
+              description: "From - specifies the anchor date for Within cycles",
+              examples: ["F2024-01-01 - from January 1, 2024", "F2024-12-31 - from December 31, 2024"]
+            }
+          }
+        }
       end
 
       @volume_only = false
@@ -126,6 +140,65 @@ module SOF
           Invalid period value of '#{period}' provided. Valid periods are:
           #{valid_periods.join(", ")}
         ERR
+      end
+
+      def handles?(sym)
+        sym && kind == sym.to_sym
+      end
+
+      def cycle_handlers
+        @cycle_handlers ||= Set.new
+      end
+
+      def inherited(klass)
+        cycle_handlers << klass
+      end
+
+      private
+
+      def build_kind_legend
+        legend = {}
+        cycle_handlers.each do |handler|
+          # Skip volume_only since it doesn't have a notation_id
+          next if handler.instance_variable_get(:@volume_only)
+
+          notation_id = handler.instance_variable_get(:@notation_id)
+          next unless notation_id
+
+          legend[notation_id] = {
+            description: handler.description,
+            examples: handler.examples
+          }
+        end
+        legend
+      end
+
+      def build_period_legend
+        legend = {}
+        # Use known period codes since DatePeriod is private
+        period_mappings = {
+          "D" => "day",
+          "W" => "week",
+          "M" => "month",
+          "Q" => "quarter",
+          "Y" => "year"
+        }
+
+        period_mappings.each do |code, period_name|
+          legend[code] = {
+            description: "#{period_name.capitalize} - period notation",
+            examples: period_examples_for(code, period_name)
+          }
+        end
+        legend
+      end
+
+      def period_examples_for(code, period_name)
+        base_example = (code == "D") ? "3#{code} - 3 #{period_name}s" : "2#{code} - 2 #{period_name}s"
+        lookback_example = "L#{(code == "D") ? "7" : "4"}#{code} - in the prior #{(code == "D") ? "7" : "4"} #{period_name}s"
+        calendar_example = "C1#{code} - this calendar #{period_name}"
+
+        [base_example, lookback_example, calendar_example]
       end
     end
 
@@ -176,7 +249,7 @@ module SOF
     end
 
     def considered_dates(completion_dates, anchor: Date.current)
-      covered_dates(completion_dates, anchor:).max_by(volume) { _1 }
+      covered_dates(completion_dates, anchor:).max_by(volume) { it }
     end
 
     def covered_dates(dates, anchor: Date.current)

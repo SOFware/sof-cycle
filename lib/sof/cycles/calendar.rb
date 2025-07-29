@@ -10,6 +10,14 @@ module SOF
 
       class << self
         def frame_of_reference = "total"
+
+        def description
+          "Calendar - occurrences within the current calendar period"
+        end
+
+        def examples
+          ["V2C1M - twice this calendar month", "V4C1Y - 4 times this calendar year"]
+        end
       end
 
       def self.recurring? = true
@@ -22,7 +30,7 @@ module SOF
       # @return [Date, nil] the date on which the cycle will expire given the
       #   provided completion dates. Returns nil if the cycle is already unsatisfied.
       def expiration_of(completion_dates)
-        anchor = completion_dates.max_by(volume) { _1 }.min
+        anchor = completion_dates.max_by(volume) { it }.min
         return unless satisfied_by?(completion_dates, anchor:)
 
         window_end(anchor) + duration

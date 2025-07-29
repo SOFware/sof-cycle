@@ -10,6 +10,14 @@ module SOF
 
       def self.recurring? = true
 
+      def self.description
+        "Lookback - occurrences within a prior time period counting backwards from today"
+      end
+
+      def self.examples
+        ["V3L3D - 3 times in the prior 3 days", "V1L2W - once in the prior 2 weeks"]
+      end
+
       def to_s = "#{volume}x in the prior #{period_count} #{humanized_period}"
 
       def volume_to_delay_expiration(completion_dates, anchor:)
@@ -25,7 +33,7 @@ module SOF
       # @return [Date, nil] the date on which the cycle will expire given the
       #   provided completion dates. Returns nil if the cycle is already unsatisfied.
       def expiration_of(completion_dates)
-        anchor = completion_dates.max_by(volume) { _1 }.min
+        anchor = completion_dates.max_by(volume) { it }.min
         return unless satisfied_by?(completion_dates, anchor:)
 
         window_end anchor

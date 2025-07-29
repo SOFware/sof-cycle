@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find:*)",
+      "Bash(ls:*)",
+      "Bash(mkdir:*)",
+      "Bash(touch:*)",
+      "Bash(rm:*)",
+      "Bash(bundle exec rspec:*)",
+      "Bash(bundle exec rake:*)",
+      "Bash(bundle exec standardrb:*)",
+      "Bash(git checkout:*)",
+      "Bash(bundle exec ruby:*)"
+    ],
+    "deny": []
+  }
+}
