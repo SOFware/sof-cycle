@@ -141,6 +141,7 @@ DEPENDENCIES
   reissue
   rspec
   simplecov
+  simplecov_json_formatter
   sof-cycle!
   standard
 

@@ -10,6 +10,14 @@ module SOF
 
       def self.recurring? = false
 
+      def self.description
+        "Within - occurrences within a time period from a specific date"
+      end
+
+      def self.examples
+        ["V2W3DF2024-01-01 - twice within 3 days from Jan 1, 2024"]
+      end
+
       def to_s = "#{volume}x within #{date_range}"
 
       def extend_period(count)
@@ -23,7 +31,7 @@ module SOF
       def date_range
         return humanized_span unless active?
 
-        [start_date, final_date].map { _1.to_fs(:american) }.join(" - ")
+        [start_date, final_date].map { it.to_fs(:american) }.join(" - ")
       end
 
       def final_date(_ = nil) = time_span.end_date(start_date)
