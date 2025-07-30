@@ -1,5 +1,5 @@
 if ENV["CI"]
-  require "simplecov"
+  load File.expand_path("../.simplecov", __dir__)
 end
 
 require "sof-cycle"
