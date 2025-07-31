@@ -3,7 +3,7 @@
 require "spec_helper"
 
 module SOF
-  RSpec.describe Parser, type: :value do
+  RSpec.describe Cycle::Parser, type: :value do
     describe ".load(hash)" do
       it "returns a Parser instance" do
         hash = {
