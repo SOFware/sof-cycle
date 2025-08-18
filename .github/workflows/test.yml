@@ -31,7 +31,7 @@ jobs:
       contents: read
       id-token: write  # Required for OIDC authentication
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.version }}
@@ -58,7 +58,7 @@ jobs:
       matrix:
         version: ["3.4"]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.version }}
