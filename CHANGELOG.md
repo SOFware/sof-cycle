@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.8] - Unreleased
 
+### Changed
+
+- Simplified `handles?` logic to do string comparison instead of symbol comparison.
+
 ## [0.1.7] - 2025-06-09
 
 ### Added

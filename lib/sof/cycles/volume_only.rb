@@ -9,7 +9,7 @@ module SOF
       @valid_periods = []
 
       class << self
-        def handles?(sym) = sym.nil? || super
+        def handles?(sym) = sym.nil? || sym.to_s == "volume_only"
 
         def validate_period(period)
           raise InvalidPeriod, <<~ERR.squish unless period.nil?

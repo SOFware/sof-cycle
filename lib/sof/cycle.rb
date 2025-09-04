@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
+require "forwardable"
 require_relative "parser"
 
 module SOF
   class Cycle
-    extend Forwardable
+    extend ::Forwardable
     class InvalidInput < StandardError; end
 
     class InvalidPeriod < InvalidInput; end
@@ -143,7 +144,7 @@ module SOF
       end
 
       def handles?(sym)
-        sym && kind == sym.to_sym
+        kind.to_s == sym.to_s
       end
 
       def cycle_handlers
