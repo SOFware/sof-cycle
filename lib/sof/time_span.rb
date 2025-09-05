@@ -49,6 +49,10 @@ module SOF
       end
     end
 
+    def notation
+      [period_count, code].join
+    end
+
     # Class used to calculate the windows of time so that
     # a TimeSpan object will know the correct end of year,
     # quarter, etc.
@@ -63,7 +67,7 @@ module SOF
         end
 
         def for_notation(notation)
-          types.find do |klass|
+          DatePeriod.types.find do |klass|
             klass.code == notation.to_s.upcase
           end
         end
@@ -189,7 +193,7 @@ module SOF
     end
     attr_reader :window
 
-    delegate [:end_date, :begin_date] => :window
+    delegate [:end_date, :begin_date, :code] => :window
 
     def end_date_of_period(date)
       window.end_of_period(date)

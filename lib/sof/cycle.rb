@@ -236,7 +236,7 @@ module SOF
       [
         "V#{volume}",
         self.class.notation_id,
-        TimeSpan.notation(hash.slice(:period, :period_count)),
+        time_span.notation,
         hash.fetch(:from, nil)
       ].compact.join
     end
