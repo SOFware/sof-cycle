@@ -67,7 +67,7 @@ module SOF
         end
 
         def for_notation(notation)
-          types.find do |klass|
+          DatePeriod.types.find do |klass|
             klass.code == notation.to_s.upcase
           end
         end
