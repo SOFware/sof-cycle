@@ -69,7 +69,7 @@ module SOF
           raise InvalidInput, "'#{notation}' is not a valid input"
         end
 
-        cycle = cycle_handlers.find do |klass|
+        cycle = Cycle.cycle_handlers.find do |klass|
           parser.parses?(klass.notation_id)
         end.new(notation, parser:)
         return cycle if parser.active?
@@ -84,7 +84,7 @@ module SOF
       #   class_for_notation_id('L')
       #
       def class_for_notation_id(notation_id)
-        cycle_handlers.find do |klass|
+        Cycle.cycle_handlers.find do |klass|
           klass.notation_id == notation_id
         end || raise(InvalidKind, "'#{notation_id}' is not a valid kind of #{name}")
       end
