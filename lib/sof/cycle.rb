@@ -152,14 +152,14 @@ module SOF
       end
 
       def inherited(klass)
-        cycle_handlers << klass
+        Cycle.cycle_handlers << klass
       end
 
       private
 
       def build_kind_legend
         legend = {}
-        cycle_handlers.each do |handler|
+        Cycle.cycle_handlers.each do |handler|
           # Skip volume_only since it doesn't have a notation_id
           next if handler.instance_variable_get(:@volume_only)
 
