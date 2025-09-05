@@ -152,14 +152,14 @@ module SOF
       end
 
       def inherited(klass)
-        cycle_handlers << klass
+        Cycle.cycle_handlers << klass
       end
 
       private
 
       def build_kind_legend
         legend = {}
-        cycle_handlers.each do |handler|
+        Cycle.cycle_handlers.each do |handler|
           # Skip volume_only since it doesn't have a notation_id
           next if handler.instance_variable_get(:@volume_only)
 
@@ -231,7 +231,7 @@ module SOF
     end
 
     # Return the cycle representation as a notation string
-    def notation = self.class.notation(to_h)
+    def notation = Cycle.notation(to_h)
 
     # Cycles are considered equal if their hash representations are equal
     def ==(other) = to_h == other.to_h
