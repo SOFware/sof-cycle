@@ -49,6 +49,20 @@ module SOF
       end
     end
 
+    describe "#to_s" do
+      context "with a dormant Within cycle" do
+        it "returns the cycle string representation with (dormant) suffix" do
+          expect(within_cycle.to_s).to eq "2x within 180 days (dormant)"
+        end
+      end
+
+      context "with a dormant EndOf cycle" do
+        it "returns the cycle string representation with (dormant) suffix" do
+          expect(end_of_cycle.to_s).to eq "2x by the last day of the 17th subsequent month (dormant)"
+        end
+      end
+    end
+
     describe "#kind & #kind?" do
       it "returns the correct kind" do
         expect(within_cycle.kind).to eq(:dormant)

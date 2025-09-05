@@ -12,7 +12,7 @@ module SOF
         def handles?(sym) = sym.nil? || sym.to_s == "volume_only"
 
         def validate_period(period)
-          raise InvalidPeriod, <<~ERR.squish unless period.nil?
+          raise Cycle::InvalidPeriod, <<~ERR.squish unless period.nil?
             Invalid period value of '#{period}' provided. Valid periods are:
             #{valid_periods.join(", ")}
           ERR

@@ -29,7 +29,7 @@ module SOF
       "2x by #{@end_date.to_fs(:american)}"
 
     context "when the cycle is dormant" do
-      before { allow(cycle).to receive(:dormant?).and_return(true) }
+      before { allow(cycle.parser).to receive(:dormant?).and_return(true) }
 
       it_behaves_like "#to_s returns",
         "2x by the last day of the 17th subsequent month"

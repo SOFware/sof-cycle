@@ -59,5 +59,49 @@ module SOF
         expect(span.end_date_of_period("2022-01-15".to_date)).to eq Date.parse("2022-03-31")
       end
     end
+
+    describe "#begin_date_of_period" do
+      it "for a quarter period returns the beginning of the quarter" do
+        span = described_class.for("1", "Q")
+        expect(span.begin_date_of_period("2022-02-15".to_date)).to eq Date.parse("2022-01-01")
+      end
+
+      it "for a week period returns the beginning of the week" do
+        span = described_class.for("1", "W")
+        # 2022-01-15 is a Saturday, beginning of week is Monday 2022-01-10
+        expect(span.begin_date_of_period("2022-01-15".to_date)).to eq Date.parse("2022-01-10")
+      end
+
+      it "for a day period returns the same date" do
+        span = described_class.for("1", "D")
+        expect(span.begin_date_of_period("2022-01-15".to_date)).to eq Date.parse("2022-01-15")
+      end
+    end
+
+    describe "#duration" do
+      it "for quarters returns the duration in months" do
+        span = described_class.for("2", "Q")
+        expect(span.duration).to eq 6.months
+      end
+    end
+
+    describe "#final_date" do
+      it "returns nil if there is no period" do
+        span = described_class.for("", "")
+        expect(span.final_date(Date.parse("2022-01-15"))).to be_nil
+      end
+
+      it "returns the end date for a valid period" do
+        span = described_class.for("3", "M")
+        expect(span.final_date(Date.parse("2022-01-15"))).to eq Date.parse("2022-04-15")
+      end
+    end
+
+    describe "#to_h" do
+      it "returns a hash with period and period_count" do
+        span = described_class.for("3", "M")
+        expect(span.to_h).to eq({period: :month, period_count: 3})
+      end
+    end
   end
 end

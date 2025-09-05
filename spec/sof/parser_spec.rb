@@ -49,6 +49,22 @@ module SOF
       end
     end
 
+    describe "#from_data" do
+      context "when notation has no from date" do
+        it "returns an empty hash" do
+          parser = described_class.new("V1L180D")
+          expect(parser.from_data).to eq({})
+        end
+      end
+
+      context "when notation has a from date" do
+        it "returns a hash with the from date" do
+          parser = described_class.new("V1W1MF2024-01-01")
+          expect(parser.from_data).to eq({from: "F2024-01-01"})
+        end
+      end
+    end
+
     describe "#valid?" do
       it "returns true if the notation is recognized" do
         aggregate_failures do
