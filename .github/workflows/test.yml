@@ -45,7 +45,7 @@ jobs:
       - name: Test
         run: bundle exec rake
       - name: Upload coverage to QLTY
-        uses: qltysh/qlty-action/coverage@v1
+        uses: qltysh/qlty-action/coverage@v2
         if: always()
         with:
           oidc: true
