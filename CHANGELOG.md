@@ -7,4 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.11] - Unreleased
 
+### Changed
+
+- Use `time_span.notation` instead of `TimeSpan.notation` in `Cycle#notation`.
+
 ## [0.1.10] - 2025-09-04
