@@ -231,7 +231,15 @@ module SOF
     end
 
     # Return the cycle representation as a notation string
-    def notation = Cycle.notation(to_h)
+    def notation
+      hash = to_h
+      [
+        "V#{volume}",
+        self.class.notation_id,
+        TimeSpan.notation(hash.slice(:period, :period_count)),
+        hash.fetch(:from, nil)
+      ].compact.join
+    end
 
     # Cycles are considered equal if their hash representations are equal
     def ==(other) = to_h == other.to_h

@@ -29,7 +29,7 @@ module SOF
 
       # Return a notation string from a hash
       def notation(hash)
-        return unless hash.key?(:period)
+        return unless hash.key?(:period) && hash[:period].present?
 
         [
           hash.fetch(:period_count) { 1 },
