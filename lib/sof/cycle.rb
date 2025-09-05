@@ -231,7 +231,7 @@ module SOF
     end
 
     # Return the cycle representation as a notation string
-    def notation = self.class.notation(to_h)
+    def notation = Cycle.notation(to_h)
 
     # Cycles are considered equal if their hash representations are equal
     def ==(other) = to_h == other.to_h
