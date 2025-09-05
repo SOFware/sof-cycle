@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    sof-cycle (0.1.10)
+    sof-cycle (0.1.11)
       activesupport (>= 6.0)
       forwardable
 
