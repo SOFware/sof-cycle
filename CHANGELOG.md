@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.9] - Unreleased
 
+### Changed
+
+- Make use of scoping for `Cycle.cycle_handlers` to prevent collisions with other Cycle classes.
+
 ## [0.1.8] - 2025-09-04
 
 ### Changed
