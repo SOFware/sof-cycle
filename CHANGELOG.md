@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.12] - Unreleased
 
+### Added
+
+- Missing code coverage and updated EndOf to properly handle dormant cycles.
+
 ## [0.1.11] - 2025-09-05
 
 ### Changed

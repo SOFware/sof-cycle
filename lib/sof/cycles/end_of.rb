@@ -27,7 +27,7 @@ module SOF
       end
 
       def to_s
-        return dormant_to_s if dormant?
+        return dormant_to_s if parser.dormant? || from_date.nil?
 
         "#{volume}x by #{final_date.to_fs(:american)}"
       end
@@ -45,12 +45,18 @@ module SOF
       #   Cycle.for("V1E18MF2020-01-09")
       #     .expiration_of(anchor: "2020-06-04".to_date)
       #   # => #<Date: 2021-06-30>
-      def expiration_of(_ = nil, anchor: nil) = final_date
+      def expiration_of(_ = nil, anchor: nil)
+        return nil if parser.dormant? || from_date.nil?
+        final_date
+      end
 
       # Is the supplied anchor date prior to the final date?
       #
       # @return [Boolean] true if the cycle is satisfied, false otherwise
-      def satisfied_by?(_ = nil, anchor: Date.current) = anchor <= final_date
+      def satisfied_by?(_ = nil, anchor: Date.current)
+        return false if parser.dormant? || from_date.nil?
+        anchor <= final_date
+      end
 
       # Calculates the final date of the cycle
       #
@@ -61,11 +67,14 @@ module SOF
       # @example
       #   Cycle.for("V1E18MF2020-01-09").final_date
       #   # => #<Date: 2021-06-30>
-      def final_date(_ = nil) = time_span
-        .end_date(start_date - 1.send(period))
-        .end_of_month
+      def final_date(_ = nil)
+        return nil if parser.dormant? || from_date.nil?
+        time_span
+          .end_date(start_date - 1.send(period))
+          .end_of_month
+      end
 
-      def start_date(_ = nil) = from_date.to_date
+      def start_date(_ = nil) = from_date&.to_date
 
       private
 

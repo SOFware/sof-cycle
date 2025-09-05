@@ -49,6 +49,18 @@ module SOF
       end
     end
 
+    describe ".validate_period" do
+      it "raises an error if a period is provided" do
+        expect {
+          described_class.validate_period("D")
+        }.to raise_error(Cycle::InvalidPeriod, /Invalid period value of 'D' provided/)
+      end
+
+      it "does not raise an error if period is nil" do
+        expect { described_class.validate_period(nil) }.not_to raise_error
+      end
+    end
+
     describe "#satisfied_by?(completed_dates, anchor:)" do
       context "when the completions--judged from the anchor--satisfy the cycle" do
         it "returns true" do
