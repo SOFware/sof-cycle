@@ -27,7 +27,7 @@ module SOF
       end
 
       def to_s
-        return dormant_to_s if parser.parser.dormant? || from_date.nil?
+        return dormant_to_s if parser.dormant? || from_date.nil?
 
         "#{volume}x by #{final_date.to_fs(:american)}"
       end

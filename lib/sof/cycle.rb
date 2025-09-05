@@ -70,9 +70,18 @@ module SOF
           raise InvalidInput, "'#{notation}' is not a valid input"
         end
 
-        cycle = registry.cycle_classes.find do |klass|
-          parser.parses?(klass.notation_id)
-        end.new(notation, parser:)
+        cycle_class = registry.cycle_classes.find do |klass|
+          klass.respond_to?(:notation_id) && parser.parses?(klass.notation_id)
+        end
+
+        raise InvalidKind, "No cycle class found for notation '#{notation}'" unless cycle_class
+
+        # Validate period if applicable
+        if cycle_class.respond_to?(:valid_periods) && !cycle_class.valid_periods.empty? && parser.period_key
+          cycle_class.validate_period(parser.period_key)
+        end
+
+        cycle = cycle_class.new(notation, parser:)
         return cycle if parser.active?
 
         Cycles::Dormant.new(cycle, parser:)
@@ -131,6 +140,15 @@ module SOF
 
       def recurring? = raise "#{name} must implement #{__method__}"
 
+      def inherited(subclass)
+        registry.register(subclass)
+      end
+
+      def handles?(kind)
+        return false if kind.nil?
+        @kind == kind.to_sym
+      end
+
       # Raises an error if the given period isn't in the list of valid periods.
       #
       # @param period [String] period matching the class valid periods
@@ -140,14 +158,6 @@ module SOF
           Invalid period value of '#{period}' provided. Valid periods are:
           #{valid_periods.join(", ")}
         ERR
-      end
-
-      def handles?(sym)
-        kind.to_s == sym.to_s
-      end
-
-      def inherited(klass)
-        registry.register(klass)
       end
 
       private

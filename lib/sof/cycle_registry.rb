@@ -14,7 +14,7 @@ module SOF
     end
 
     def handling(kind)
-      cycle_classes.find { |klass| klass.handles?(kind) } || raise(Cycle::InvalidKind, "':#{kind}' is not a valid kind of Cycle")
+      cycle_classes.find { |klass| klass.respond_to?(:handles?) && klass.handles?(kind) } || raise(Cycle::InvalidKind, "':#{kind}' is not a valid kind of Cycle")
     end
   end
 end

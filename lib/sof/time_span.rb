@@ -70,9 +70,11 @@ module SOF
         end
 
         def for_notation(notation)
+          return NullPeriod if notation.nil? || notation.to_s.empty?
+
           DatePeriod.types.find do |klass|
             klass.code == notation.to_s.upcase
-          end
+          end || raise(InvalidPeriod, "'#{notation}' is not a valid period")
         end
 
         def types = @types ||= Concurrent::Set.new
@@ -112,6 +114,28 @@ module SOF
         return period if count == 1
 
         "#{period}s"
+      end
+
+      class NullPeriod < self
+        @period = nil
+        @code = nil
+        @interval = nil
+
+        def initialize(count = nil)
+          @count = nil
+        end
+
+        def duration = 0
+
+        def end_date(date) = date
+
+        def begin_date(date) = date
+
+        def end_of_period(date) = nil
+
+        def beginning_of_period(date) = nil
+
+        def humanized_period = ""
       end
 
       class Year < self
