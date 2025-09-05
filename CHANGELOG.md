@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Registry class to manage Cycle classes.
+- Use of Concurrent::Set for thread safety.
 
 ## [0.1.12] - 2025-09-05
 

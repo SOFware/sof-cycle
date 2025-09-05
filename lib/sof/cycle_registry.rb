@@ -1,4 +1,5 @@
 require "singleton"
+require "concurrent/set"
 
 module SOF
   class CycleRegistry
@@ -9,7 +10,7 @@ module SOF
     end
 
     def cycle_classes
-      @cycle_classes ||= Set.new
+      @cycle_classes ||= Concurrent::Set.new
     end
 
     def handling(kind)

@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require "concurrent/set"
+require "concurrent/hash"
+
 module SOF
   # This class is not intended to be referenced directly.
   # This is an internal implementation of Cycle behavior.
@@ -60,8 +63,8 @@ module SOF
       extend Forwardable
       class << self
         def for(count, period_notation)
-          @cached_periods ||= {}
-          @cached_periods[period_notation] ||= {}
+          @cached_periods ||= Concurrent::Hash.new
+          @cached_periods[period_notation] ||= Concurrent::Hash.new
           @cached_periods[period_notation][count] ||= (for_notation(period_notation) || self).new(count)
           @cached_periods[period_notation][count]
         end
@@ -72,7 +75,7 @@ module SOF
           end
         end
 
-        def types = @types ||= Set.new
+        def types = @types ||= Concurrent::Set.new
 
         def inherited(klass)
           DatePeriod.types << klass
@@ -92,12 +95,12 @@ module SOF
       attr_reader :count
 
       def end_date(date)
-        @end_date ||= {}
+        @end_date ||= Concurrent::Hash.new
         @end_date[date] ||= date + duration
       end
 
       def begin_date(date)
-        @begin_date ||= {}
+        @begin_date ||= Concurrent::Hash.new
         @begin_date[date] ||= date - duration
       end
 
