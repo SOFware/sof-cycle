@@ -14,4 +14,5 @@ require "reissue/gem"
 
 Reissue::Task.create do |task|
   task.version_file = "lib/sof/cycle/version.rb"
+  task.push_finalize = :branch
 end
