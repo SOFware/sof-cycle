@@ -30,4 +30,5 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "forwardable"
   spec.add_dependency "activesupport", ">= 6.0"
+  spec.add_dependency "concurrent-ruby", "~> 1.0"
 end

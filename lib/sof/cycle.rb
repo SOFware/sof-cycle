@@ -2,6 +2,7 @@
 
 require "forwardable"
 require_relative "parser"
+require_relative "cycle_registry"
 
 module SOF
   class Cycle
@@ -25,7 +26,7 @@ module SOF
       # Return a Cycle object from a hash
       def load(hash)
         symbolized_hash = hash.symbolize_keys
-        cycle_class = class_for_kind(symbolized_hash[:kind])
+        cycle_class = registry.handling(symbolized_hash[:kind])
 
         unless cycle_class.valid_periods.empty?
           cycle_class.validate_period(
@@ -46,7 +47,7 @@ module SOF
         volume_notation = "V#{hash.fetch(:volume) { 1 }}"
         return volume_notation if hash[:kind].nil? || hash[:kind].to_sym == :volume_only
 
-        cycle_class = class_for_kind(hash[:kind].to_sym)
+        cycle_class = registry.handling(hash[:kind].to_sym)
         [
           volume_notation,
           cycle_class.notation_id,
@@ -69,13 +70,24 @@ module SOF
           raise InvalidInput, "'#{notation}' is not a valid input"
         end
 
-        cycle = Cycle.cycle_handlers.find do |klass|
-          parser.parses?(klass.notation_id)
-        end.new(notation, parser:)
+        cycle_class = registry.cycle_classes.find do |klass|
+          klass.respond_to?(:notation_id) && parser.parses?(klass.notation_id)
+        end
+
+        raise InvalidKind, "No cycle class found for notation '#{notation}'" unless cycle_class
+
+        # Validate period if applicable
+        if cycle_class.respond_to?(:valid_periods) && !cycle_class.valid_periods.empty? && parser.period_key
+          cycle_class.validate_period(parser.period_key)
+        end
+
+        cycle = cycle_class.new(notation, parser:)
         return cycle if parser.active?
 
         Cycles::Dormant.new(cycle, parser:)
       end
+
+      def registry = CycleRegistry.instance
 
       # Return the appropriate class for the give notation id
       #
@@ -84,9 +96,7 @@ module SOF
       #   class_for_notation_id('L')
       #
       def class_for_notation_id(notation_id)
-        Cycle.cycle_handlers.find do |klass|
-          klass.notation_id == notation_id
-        end || raise(InvalidKind, "'#{notation_id}' is not a valid kind of #{name}")
+        registry.handling(notation_id)
       end
 
       # Return the class handling the kind
@@ -95,9 +105,7 @@ module SOF
       # @example
       #   class_for_kind(:lookback)
       def class_for_kind(sym)
-        Cycle.cycle_handlers.find do |klass|
-          klass.handles?(sym)
-        end || raise(InvalidKind, "':#{sym}' is not a valid kind of Cycle")
+        registry.handling(sym)
       end
 
       # Return a legend explaining all notation components
@@ -132,6 +140,15 @@ module SOF
 
       def recurring? = raise "#{name} must implement #{__method__}"
 
+      def inherited(subclass)
+        registry.register(subclass)
+      end
+
+      def handles?(kind)
+        return false if kind.nil?
+        @kind == kind.to_sym
+      end
+
       # Raises an error if the given period isn't in the list of valid periods.
       #
       # @param period [String] period matching the class valid periods
@@ -143,23 +160,11 @@ module SOF
         ERR
       end
 
-      def handles?(sym)
-        kind.to_s == sym.to_s
-      end
-
-      def cycle_handlers
-        @cycle_handlers ||= Set.new
-      end
-
-      def inherited(klass)
-        Cycle.cycle_handlers << klass
-      end
-
       private
 
       def build_kind_legend
         legend = {}
-        Cycle.cycle_handlers.each do |handler|
+        registry.cycle_classes.each do |handler|
           # Skip volume_only since it doesn't have a notation_id
           next if handler.instance_variable_get(:@volume_only)
 

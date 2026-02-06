@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require "concurrent/set"
+require "concurrent/hash"
+
 module SOF
   # This class is not intended to be referenced directly.
   # This is an internal implementation of Cycle behavior.
@@ -60,19 +63,21 @@ module SOF
       extend Forwardable
       class << self
         def for(count, period_notation)
-          @cached_periods ||= {}
-          @cached_periods[period_notation] ||= {}
+          @cached_periods ||= Concurrent::Hash.new
+          @cached_periods[period_notation] ||= Concurrent::Hash.new
           @cached_periods[period_notation][count] ||= (for_notation(period_notation) || self).new(count)
           @cached_periods[period_notation][count]
         end
 
         def for_notation(notation)
+          return NullPeriod if notation.nil? || notation.to_s.empty?
+
           DatePeriod.types.find do |klass|
             klass.code == notation.to_s.upcase
-          end
+          end || raise(InvalidPeriod, "'#{notation}' is not a valid period")
         end
 
-        def types = @types ||= Set.new
+        def types = @types ||= Concurrent::Set.new
 
         def inherited(klass)
           DatePeriod.types << klass
@@ -92,12 +97,12 @@ module SOF
       attr_reader :count
 
       def end_date(date)
-        @end_date ||= {}
+        @end_date ||= Concurrent::Hash.new
         @end_date[date] ||= date + duration
       end
 
       def begin_date(date)
-        @begin_date ||= {}
+        @begin_date ||= Concurrent::Hash.new
         @begin_date[date] ||= date - duration
       end
 
@@ -109,6 +114,28 @@ module SOF
         return period if count == 1
 
         "#{period}s"
+      end
+
+      class NullPeriod < self
+        @period = nil
+        @code = nil
+        @interval = nil
+
+        def initialize(count = nil)
+          @count = nil
+        end
+
+        def duration = 0
+
+        def end_date(date) = date
+
+        def begin_date(date) = date
+
+        def end_of_period(date) = nil
+
+        def beginning_of_period(date) = nil
+
+        def humanized_period = ""
       end
 
       class Year < self
