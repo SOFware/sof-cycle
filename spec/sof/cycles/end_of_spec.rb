@@ -10,7 +10,7 @@ module SOF
     let(:notation) { "V2E18MF#{from_date}" }
     let(:anchor) { nil }
 
-    let(:end_date) { (from_date + 17.months).end_of_month }
+    let(:end_date) { (from_date + 18.months).end_of_month }
     let(:from_date) { "2020-01-01".to_date }
 
     let(:completed_dates) { [] }
@@ -24,7 +24,7 @@ module SOF
       end
     end
 
-    @end_date = ("2020-01-01".to_date + 17.months).end_of_month
+    @end_date = ("2020-01-01".to_date + 18.months).end_of_month
     it_behaves_like "#to_s returns",
       "2x by #{@end_date.to_fs(:american)}"
 
@@ -32,13 +32,13 @@ module SOF
       before { allow(cycle.parser).to receive(:dormant?).and_return(true) }
 
       it_behaves_like "#to_s returns",
-        "2x by the last day of the 17th subsequent month"
+        "2x by the last day of the 18th subsequent month"
     end
     it_behaves_like "#volume returns the volume"
     it_behaves_like "#notation returns the notation"
     it_behaves_like "#as_json returns the notation"
     it_behaves_like "it computes #final_date(given)",
-      given: nil, returns: ("2020-01-01".to_date + 17.months).end_of_month
+      given: nil, returns: ("2020-01-01".to_date + 18.months).end_of_month
     it_behaves_like "it cannot be extended"
 
     describe "#last_completed" do
@@ -66,7 +66,7 @@ module SOF
           too_late_date
         ]
       end
-      let(:recent_date) { from_date + 17.months }
+      let(:recent_date) { from_date + 18.months }
       let(:middle_date) { from_date + 2.months }
       let(:early_date) { from_date + 1.month }
       let(:too_early_date) { from_date - 1.day }
@@ -85,7 +85,7 @@ module SOF
 
     describe "#satisfied_by?(anchor:)" do
       context "when the anchor date is < the final date" do
-        let(:anchor) { "2021-06-29".to_date }
+        let(:anchor) { "2021-07-30".to_date }
 
         it "returns true" do
           expect(cycle).to be_satisfied_by(anchor:)
@@ -93,7 +93,7 @@ module SOF
       end
 
       context "when the anchor date is = the final date" do
-        let(:anchor) { "2021-06-30".to_date }
+        let(:anchor) { "2021-07-31".to_date }
 
         it "returns true" do
           expect(cycle).to be_satisfied_by(anchor:)
@@ -101,7 +101,7 @@ module SOF
       end
 
       context "when the anchor date is > the final date" do
-        let(:anchor) { "2021-07-01".to_date }
+        let(:anchor) { "2021-08-01".to_date }
 
         it "returns false" do
           expect(cycle).not_to be_satisfied_by(completed_dates, anchor:)
@@ -111,26 +111,26 @@ module SOF
 
     describe "#expiration_of(completion_dates)" do
       context "when the anchor date is < the final date" do
-        let(:anchor) { "2021-06-29".to_date }
+        let(:anchor) { "2021-07-30".to_date }
 
         it "returns the final date" do
-          expect(cycle.expiration_of(anchor:)).to eq "2021-06-30".to_date
+          expect(cycle.expiration_of(anchor:)).to eq "2021-07-31".to_date
         end
       end
 
       context "when the anchor date = the final date" do
-        let(:anchor) { "2021-06-30".to_date }
+        let(:anchor) { "2021-07-31".to_date }
 
         it "returns the final date" do
-          expect(cycle.expiration_of(anchor:)).to eq "2021-06-30".to_date
+          expect(cycle.expiration_of(anchor:)).to eq "2021-07-31".to_date
         end
       end
 
       context "when the anchor date > the final date" do
-        let(:anchor) { "2021-07-31".to_date }
+        let(:anchor) { "2021-08-31".to_date }
 
         it "returns the final date" do
-          expect(cycle.expiration_of(anchor:)).to eq "2021-06-30".to_date
+          expect(cycle.expiration_of(anchor:)).to eq "2021-07-31".to_date
         end
       end
     end

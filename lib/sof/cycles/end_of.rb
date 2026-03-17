@@ -2,7 +2,7 @@
 
 # Captures the logic for enforcing the EndOf cycle variant
 #   E.g. "V1E18MF2020-01-05" means:
-#     You're good until the end of the 17th subsequent month from 2020-01-05.
+#     You're good until the end of the 18th month from 2020-01-05.
 #     Complete 1 by that date to reset the cycle.
 #
 # Some of the calculations are quite different from other cycles.
@@ -62,15 +62,15 @@ module SOF
       #
       # @param [nil] _ Unused parameter, maintained for compatibility
       # @return [Date] The final date of the cycle calculated as the end of the
-      #   nth subsequent period after the FROM date, where n = (period count - 1)
+      #   nth period after the FROM date
       #
       # @example
       #   Cycle.for("V1E18MF2020-01-09").final_date
-      #   # => #<Date: 2021-06-30>
+      #   # => #<Date: 2021-07-31>
       def final_date(_ = nil)
         return nil if parser.dormant? || from_date.nil?
         time_span
-          .end_date(start_date - 1.send(period))
+          .end_date(start_date)
           .end_of_month
       end
 
@@ -86,7 +86,7 @@ module SOF
       end
 
       def subsequent_ordinal
-        ActiveSupport::Inflector.ordinalize(period_count - 1)
+        ActiveSupport::Inflector.ordinalize(period_count)
       end
     end
   end
