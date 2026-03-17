@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Dormant capability is now declared on each cycle class (`def self.dormant_capable? = true`) instead of only in `Parser.dormant_capable_kinds`
 
+### Fixed
+
+- EndOf cycle `final_date` was off by one period — `V1E12M` now correctly expires at the end of the 12th month, not the 11th
+
 ## [0.1.12] - 2025-09-05
 
 ### Added
