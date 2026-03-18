@@ -12,6 +12,9 @@ module SOF
     let(:end_of_cycle) { Cycle.for(end_of_notation) }
     let(:end_of_notation) { "V2E18M" }
 
+    let(:repeating_within_cycle) { Cycle.for(repeating_within_notation) }
+    let(:repeating_within_notation) { "V1I24M" }
+
     let(:anchor) { "2020-08-01".to_date }
     let(:completed_dates) do
       [
@@ -61,6 +64,12 @@ module SOF
           expect(end_of_cycle.to_s).to eq "2x by the last day of the 17th subsequent month (dormant)"
         end
       end
+
+      context "with a dormant RepeatingWithin cycle" do
+        it "returns the cycle string representation with (dormant) suffix" do
+          expect(repeating_within_cycle.to_s).to eq "1x every 24 months (dormant)"
+        end
+      end
     end
 
     describe "#kind & #kind?" do
@@ -77,6 +86,8 @@ module SOF
             .to eq("#{within_notation}F2024-06-09")
           expect(end_of_cycle.activated_notation("2024-06-09"))
             .to eq("#{end_of_notation}F2024-06-09")
+          expect(repeating_within_cycle.activated_notation("2024-06-09"))
+            .to eq("#{repeating_within_notation}F2024-06-09")
         end
       end
 
@@ -87,6 +98,8 @@ module SOF
             .to eq("#{within_notation}F2024-06-09")
           expect(end_of_cycle.activated_notation(time))
             .to eq("#{end_of_notation}F2024-06-09")
+          expect(repeating_within_cycle.activated_notation(time))
+            .to eq("#{repeating_within_notation}F2024-06-09")
         end
       end
     end
@@ -96,6 +109,7 @@ module SOF
         aggregate_failures do
           expect(within_cycle.covered_dates(completed_dates, anchor:)).to be_empty
           expect(end_of_cycle.covered_dates(completed_dates, anchor:)).to be_empty
+          expect(repeating_within_cycle.covered_dates(completed_dates, anchor:)).to be_empty
         end
       end
     end
@@ -112,6 +126,11 @@ module SOF
           expect(end_of_cycle).not_to be_satisfied_by(completed_dates, anchor:)
           expect(end_of_cycle).not_to be_satisfied_by([], anchor:)
           expect(end_of_cycle).not_to be_satisfied_by(completed_dates, anchor: 5.years.from_now)
+
+          expect(repeating_within_cycle).not_to be_satisfied_by(completed_dates, anchor: 5.years.ago)
+          expect(repeating_within_cycle).not_to be_satisfied_by(completed_dates, anchor:)
+          expect(repeating_within_cycle).not_to be_satisfied_by([], anchor:)
+          expect(repeating_within_cycle).not_to be_satisfied_by(completed_dates, anchor: 5.years.from_now)
         end
       end
     end
@@ -124,6 +143,9 @@ module SOF
 
           expect(end_of_cycle.expiration_of(completed_dates)).to be_nil
           expect(end_of_cycle.expiration_of([])).to be_nil
+
+          expect(repeating_within_cycle.expiration_of(completed_dates)).to be_nil
+          expect(repeating_within_cycle.expiration_of([])).to be_nil
         end
       end
     end
@@ -133,6 +155,7 @@ module SOF
         aggregate_failures do
           expect(within_cycle.volume).to eq(2)
           expect(end_of_cycle.volume).to eq(2)
+          expect(repeating_within_cycle.volume).to eq(1)
         end
       end
     end
@@ -142,6 +165,7 @@ module SOF
         aggregate_failures do
           expect(within_cycle.notation).to eq(within_notation)
           expect(end_of_cycle.notation).to eq(end_of_notation)
+          expect(repeating_within_cycle.notation).to eq(repeating_within_notation)
         end
       end
     end

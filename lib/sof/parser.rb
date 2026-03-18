@@ -14,13 +14,13 @@ module SOF
     extend Forwardable
     PARTS_REGEX = /
       ^(?<vol>V(?<volume>\d*))? # optional volume
-      (?<set>(?<kind>L|C|W|E) # kind
+      (?<set>(?<kind>L|C|W|E|I) # kind
       (?<period_count>\d+) # period count
       (?<period_key>D|W|M|Q|Y)?)? # period_key
       (?<from>F(?<from_date>\d{4}-\d{2}-\d{2}))?$ # optional from
     /ix
 
-    def self.dormant_capable_kinds = %w[E W]
+    def self.dormant_capable_kinds = %w[E W I]
 
     def self.for(notation_or_parser)
       return notation_or_parser if notation_or_parser.is_a? self
@@ -63,6 +63,8 @@ module SOF
 
       self.class.load(to_h.merge(from_date: date.to_date)).notation
     end
+
+    alias_method :reactivated_notation, :activated_notation
 
     def ==(other) = other.to_h == to_h
 

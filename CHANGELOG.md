@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.13] - Unreleased
 
+### Added
+
+- RepeatingWithin cycle kind (`I` notation) — a Within that repeats, re-anchoring from the completion date after satisfaction (e.g., `V1I24MF2026-03-31`)
+- `reactivated_notation(date)` alias for `activated_notation` — self-documenting call site when re-anchoring a satisfied cycle
+
 ## [0.1.12] - 2025-09-05
 
 ### Added
