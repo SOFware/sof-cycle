@@ -58,7 +58,7 @@ module SOF
 
       context "with a dormant EndOf cycle" do
         it "returns the cycle string representation with (dormant) suffix" do
-          expect(end_of_cycle.to_s).to eq "2x by the last day of the 17th subsequent month (dormant)"
+          expect(end_of_cycle.to_s).to eq "2x by the last day of the 18th month (dormant)"
         end
       end
     end
