@@ -130,6 +130,8 @@ module SOF
       attr_reader :notation_id, :kind, :valid_periods
       def volume_only? = @volume_only
 
+      def dormant_capable? = false
+
       def recurring? = raise "#{name} must implement #{__method__}"
 
       # Raises an error if the given period isn't in the list of valid periods.

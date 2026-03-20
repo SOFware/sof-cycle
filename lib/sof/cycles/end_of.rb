@@ -18,6 +18,8 @@ module SOF
 
       def self.recurring? = true
 
+      def self.dormant_capable? = true
+
       def self.description
         "End of - occurrences by the end of a time period"
       end

@@ -10,6 +10,8 @@ module SOF
 
       def self.recurring? = false
 
+      def self.dormant_capable? = true
+
       def self.description
         "Within - occurrences within a time period from a specific date"
       end
