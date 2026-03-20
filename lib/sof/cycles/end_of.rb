@@ -81,13 +81,10 @@ module SOF
       private
 
       def dormant_to_s
-        <<~DESC.squish
-          #{volume}x by the last day of the #{subsequent_ordinal}
-          subsequent #{period}
-        DESC
+        "#{volume}x by the last day of the #{ordinalized_period_count} #{period}"
       end
 
-      def subsequent_ordinal
+      def ordinalized_period_count
         ActiveSupport::Inflector.ordinalize(period_count)
       end
     end

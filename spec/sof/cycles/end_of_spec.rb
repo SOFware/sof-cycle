@@ -32,7 +32,7 @@ module SOF
       before { allow(cycle.parser).to receive(:dormant?).and_return(true) }
 
       it_behaves_like "#to_s returns",
-        "2x by the last day of the 18th subsequent month"
+        "2x by the last day of the 18th month"
     end
     it_behaves_like "#volume returns the volume"
     it_behaves_like "#notation returns the notation"
