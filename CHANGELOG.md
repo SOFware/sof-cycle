@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.13] - Unreleased
 
+### Added
+
+- Interval cycle kind (`I` notation) — repeating windows anchored to a from_date that re-anchor from completion date (e.g., `V1I24MF2026-03-31`)
+
 ### Changed
 
 - Dormant capability is now declared on each cycle class (`def self.dormant_capable? = true`) instead of only in `Parser.dormant_capable_kinds`

@@ -217,12 +217,13 @@ module SOF
 
     attr_reader :parser
 
-    delegate [:activated_notation, :volume, :from, :from_date, :time_span, :period,
+    delegate [:activated_notation, :volume, :from,
+      :from_date, :time_span, :period,
       :humanized_period, :period_key, :active?] => :@parser
     delegate [:kind, :recurring?, :volume_only?, :valid_periods] => "self.class"
     delegate [:period_count, :duration] => :time_span
-    delegate [:calendar?, :dormant?, :end_of?, :lookback?, :volume_only?,
-      :within?] => :kind_inquiry
+    delegate [:calendar?, :dormant?, :end_of?, :interval?, :lookback?,
+      :volume_only?, :within?] => :kind_inquiry
 
     def kind_inquiry = ActiveSupport::StringInquirer.new(kind.to_s)
 
