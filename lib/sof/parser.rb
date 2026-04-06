@@ -12,6 +12,7 @@ module SOF
   # This is an internal implementation of Cycle behavior.
   class Parser
     extend Forwardable
+
     PARTS_REGEX = /
       ^(?<vol>V(?<volume>\d*))? # optional volume
       (?<set>(?<kind>L|C|W|E|I) # kind

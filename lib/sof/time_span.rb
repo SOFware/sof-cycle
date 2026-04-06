@@ -5,6 +5,7 @@ module SOF
   # This is an internal implementation of Cycle behavior.
   class TimeSpan
     extend Forwardable
+
     # TimeSpan objects map Cycle notations to behaviors for their periods
     #
     # For example:
@@ -58,6 +59,7 @@ module SOF
     # quarter, etc.
     class DatePeriod
       extend Forwardable
+
       class << self
         def for(count, period_notation)
           @cached_periods ||= {}
