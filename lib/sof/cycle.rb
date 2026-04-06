@@ -6,6 +6,7 @@ require_relative "parser"
 module SOF
   class Cycle
     extend ::Forwardable
+
     class InvalidInput < StandardError; end
 
     class InvalidPeriod < InvalidInput; end
