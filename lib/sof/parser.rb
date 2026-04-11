@@ -15,7 +15,7 @@ module SOF
 
     PARTS_REGEX = /
       ^(?<vol>V(?<volume>\d*))? # optional volume
-      (?<set>(?<kind>L|C|W|E|I) # kind
+      (?<set>(?<kind>LE|L|C|W|E|I) # kind
       (?<period_count>\d+) # period count
       (?<period_key>D|W|M|Q|Y)?)? # period_key
       (?<from>F(?<from_date>\d{4}-\d{2}-\d{2}))?$ # optional from

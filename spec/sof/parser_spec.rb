@@ -225,5 +225,20 @@ module SOF
         end
       end
     end
+
+    describe "LE kind" do
+      it "parses V1LE24M as a valid LE notation" do
+        parser = described_class.new("V1LE24M")
+        expect(parser).to be_valid
+        expect(parser.kind).to eq("LE")
+        expect(parser.period_count).to eq("24")
+        expect(parser.period_key).to eq("M")
+      end
+
+      it "does not confuse V1L24M (Lookback) with LE" do
+        parser = described_class.new("V1L24M")
+        expect(parser.kind).to eq("L")
+      end
+    end
   end
 end

@@ -224,7 +224,7 @@ module SOF
     delegate [:kind, :recurring?, :volume_only?, :valid_periods] => "self.class"
     delegate [:period_count, :duration] => :time_span
     delegate [:calendar?, :dormant?, :end_of?, :interval?, :lookback?,
-      :volume_only?, :within?] => :kind_inquiry
+      :lookback_end_of?, :volume_only?, :within?] => :kind_inquiry
 
     def kind_inquiry = ActiveSupport::StringInquirer.new(kind.to_s)
 
