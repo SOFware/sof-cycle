@@ -5,18 +5,6 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.14] - Unreleased
+## [0.1.15] - Unreleased
 
-## [0.1.13] - 2026-03-20
-
-### Added
-
-- Interval cycle kind (`I` notation) — repeating windows anchored to a from_date that re-anchor from completion date (e.g., `V1I24MF2026-03-31`)
-
-### Changed
-
-- Dormant capability is now declared on each cycle class (`def self.dormant_capable? = true`) instead of only in `Parser.dormant_capable_kinds`
-
-### Fixed
-
-- EndOf cycle `final_date` was off by one period — `V1E12M` now correctly expires at the end of the 12th month, not the 11th
+## [0.1.14] - 2026-04-27
