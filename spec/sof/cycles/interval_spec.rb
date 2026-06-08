@@ -134,9 +134,9 @@ module SOF
       end
     end
 
-    describe "#expiration_of" do
+    describe "#expires_after" do
       it "returns the final date" do
-        expect(cycle.expiration_of).to eq "2028-03-31".to_date
+        expect(cycle.expires_after).to eq "2028-03-31".to_date
       end
     end
 
@@ -151,8 +151,8 @@ module SOF
         expect(cycle.final_date).to be_nil
       end
 
-      it "returns nil for expiration_of" do
-        expect(cycle.expiration_of).to be_nil
+      it "returns nil for expires_after" do
+        expect(cycle.expires_after).to be_nil
       end
 
       it "returns false for satisfied_by?" do

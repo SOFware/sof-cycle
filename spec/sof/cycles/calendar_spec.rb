@@ -81,10 +81,10 @@ module SOF
       end
     end
 
-    describe "#expiration_of(completion_dates)" do
+    describe "#expires_after(completion_dates)" do
       context "when the completions currently satisfy the cycle" do
         it "returns the end of the _next_ calendar period" do
-          expect(cycle.expiration_of(completed_dates)).to eq(
+          expect(cycle.expires_after(completed_dates)).to eq(
             (recent_date + 1.year).end_of_year
           )
         end
@@ -96,7 +96,7 @@ module SOF
         let(:anchor) { "2020-01-16".to_date }
 
         it "returns the end of the _next_ calendar period" do
-          expect(cycle.expiration_of(completed_dates)).to eq(
+          expect(cycle.expires_after(completed_dates)).to eq(
             "2020-02-29".to_date
           )
         end
@@ -106,7 +106,7 @@ module SOF
         let(:notation) { "V5L180D" }
 
         it "returns nil" do
-          expect(cycle.expiration_of(completed_dates)).to be_nil
+          expect(cycle.expires_after(completed_dates)).to be_nil
         end
       end
     end

@@ -13,6 +13,8 @@ module SOF
 
     class InvalidKind < InvalidInput; end
 
+    Deprecation = ActiveSupport::Deprecation.new("0.2.0", "sof-cycle")
+
     class << self
       # Turn a cycle or notation string into a hash
       def dump(cycle_or_string)
@@ -282,7 +284,21 @@ module SOF
     # Return the final date of the cycle
     def final_date(_anchor) = nil
 
-    def expiration_of(_completion_dates, anchor: Date.current) = nil
+    # The last date on which the supplied completions still satisfy the cycle.
+    # The cycle goes red the day *after* this date.
+    #
+    # @return [Date, nil] the final satisfied date, or nil if already unsatisfied
+    def expires_after(_completion_dates, anchor: Date.current) = nil
+
+    # @deprecated Use {#expires_after} instead. The name implied the first
+    #   unsatisfied date, but the value returned is the last *satisfied* date.
+    def expiration_of(...)
+      Deprecation.warn(
+        "SOF::Cycle#expiration_of is deprecated and will be removed in 0.2.0; " \
+        "use #expires_after instead."
+      )
+      expires_after(...)
+    end
 
     def volume_to_delay_expiration(_completion_dates, anchor:) = 0
 

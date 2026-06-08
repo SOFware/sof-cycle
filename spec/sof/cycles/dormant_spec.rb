@@ -135,17 +135,17 @@ module SOF
       end
     end
 
-    describe "#expiration_of(completion_dates)" do
+    describe "#expires_after(completion_dates)" do
       it "always returns nil" do
         aggregate_failures do
-          expect(within_cycle.expiration_of(completed_dates)).to be_nil
-          expect(within_cycle.expiration_of([])).to be_nil
+          expect(within_cycle.expires_after(completed_dates)).to be_nil
+          expect(within_cycle.expires_after([])).to be_nil
 
-          expect(end_of_cycle.expiration_of(completed_dates)).to be_nil
-          expect(end_of_cycle.expiration_of([])).to be_nil
+          expect(end_of_cycle.expires_after(completed_dates)).to be_nil
+          expect(end_of_cycle.expires_after([])).to be_nil
 
-          expect(interval_cycle.expiration_of(completed_dates)).to be_nil
-          expect(interval_cycle.expiration_of([])).to be_nil
+          expect(interval_cycle.expires_after(completed_dates)).to be_nil
+          expect(interval_cycle.expires_after([])).to be_nil
         end
       end
     end

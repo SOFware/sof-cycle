@@ -37,7 +37,7 @@ module SOF
       # Returns the expiration date for the current window
       #
       # @return [Date, nil] The final date of the current window
-      def expiration_of(_ = nil, anchor: nil)
+      def expires_after(_ = nil, anchor: nil)
         final_date
       end
 

@@ -45,9 +45,9 @@ module SOF
       #
       # @example
       #   Cycle.for("V1E18MF2020-01-09")
-      #     .expiration_of(anchor: "2020-06-04".to_date)
+      #     .expires_after(anchor: "2020-06-04".to_date)
       #   # => #<Date: 2021-06-30>
-      def expiration_of(_ = nil, anchor: nil)
+      def expires_after(_ = nil, anchor: nil)
         return nil if parser.dormant? || from_date.nil?
         final_date
       end
