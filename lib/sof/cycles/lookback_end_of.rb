@@ -20,7 +20,7 @@ module SOF
 
       def to_s = "#{volume}x in the prior #{period_count} #{humanized_period} (end of period)"
 
-      def expiration_of(completion_dates, anchor: Date.current)
+      def expires_after(completion_dates, anchor: Date.current)
         oldest = completion_dates.max_by(volume) { it }.min
         return unless satisfied_by?(completion_dates, anchor:)
 

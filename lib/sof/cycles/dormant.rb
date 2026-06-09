@@ -22,7 +22,7 @@ module SOF
 
       def covered_dates(...) = []
 
-      def expiration_of(...) = nil
+      def expires_after(...) = nil
 
       def satisfied_by?(...) = false
 

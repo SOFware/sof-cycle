@@ -85,10 +85,10 @@ module SOF
       end
     end
 
-    describe "#expiration_of(completion_dates)" do
+    describe "#expires_after(completion_dates)" do
       context "when the completions currently satisfy the cycle" do
         it "returns nil" do
-          expect(cycle.expiration_of(completed_dates)).to be nil
+          expect(cycle.expires_after(completed_dates)).to be nil
         end
       end
 
@@ -96,7 +96,7 @@ module SOF
         let(:notation) { "V5L180D" }
 
         it "returns nil" do
-          expect(cycle.expiration_of(completed_dates)).to be_nil
+          expect(cycle.expires_after(completed_dates)).to be_nil
         end
       end
     end

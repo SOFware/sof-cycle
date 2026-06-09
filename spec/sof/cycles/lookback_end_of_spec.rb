@@ -74,25 +74,25 @@ module SOF
       end
     end
 
-    describe "#expiration_of(completion_dates, anchor:)" do
+    describe "#expires_after(completion_dates, anchor:)" do
       context "when satisfied" do
         # The expiration is computed from the completion, not the anchor:
         # April 9, 2024 + 24 months = April 9, 2026 → end_of_month = April 30, 2026
         it "returns the end of the period in which the window boundary falls" do
-          expect(cycle.expiration_of([edge_completion], anchor:)).to eq("2026-04-30".to_date)
+          expect(cycle.expires_after([edge_completion], anchor:)).to eq("2026-04-30".to_date)
         end
       end
 
       context "with a completion in the middle of a period" do
         # May 15, 2024 + 24 months = May 15, 2026 → end_of_month = May 31, 2026
         it "rounds to end of that period" do
-          expect(cycle.expiration_of([inside_completion], anchor:)).to eq("2026-05-31".to_date)
+          expect(cycle.expires_after([inside_completion], anchor:)).to eq("2026-05-31".to_date)
         end
       end
 
       context "when not satisfied" do
         it "returns nil" do
-          expect(cycle.expiration_of([outside_completion], anchor:)).to be_nil
+          expect(cycle.expires_after([outside_completion], anchor:)).to be_nil
         end
       end
 
@@ -102,7 +102,7 @@ module SOF
         # Uses the oldest of the most recent 2 completions to anchor the window:
         # edge_completion (April 9, 2024) is the older of the two → April 9, 2024 + 24 months = April 30, 2026
         it "uses the oldest of the most recent volume completions" do
-          expect(cycle.expiration_of([inside_completion, edge_completion], anchor:)).to eq("2026-04-30".to_date)
+          expect(cycle.expires_after([inside_completion, edge_completion], anchor:)).to eq("2026-04-30".to_date)
         end
       end
     end

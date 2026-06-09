@@ -103,10 +103,10 @@ module SOF
       end
     end
 
-    describe "#expiration_of(completion_dates)" do
+    describe "#expires_after(completion_dates)" do
       context "when the completions currently satisfy the cycle" do
-        it "returns the date on which the completions will no longer satisfy the cycle" do
-          expect(cycle.expiration_of(completed_dates)).to eq(middle_date + 180.days)
+        it "returns the last date the completions still satisfy the cycle" do
+          expect(cycle.expires_after(completed_dates)).to eq(middle_date + 180.days)
         end
       end
 
@@ -114,8 +114,15 @@ module SOF
         let(:notation) { "V5L180D" }
 
         it "returns nil" do
-          expect(cycle.expiration_of(completed_dates)).to be_nil
+          expect(cycle.expires_after(completed_dates)).to be_nil
         end
+      end
+    end
+
+    describe "#expiration_of (deprecated alias)" do
+      it "delegates to #expires_after and emits a deprecation warning" do
+        expect(SOF::Cycle::Deprecation).to receive(:warn).with(/expires_after/)
+        expect(cycle.expiration_of(completed_dates)).to eq(cycle.expires_after(completed_dates))
       end
     end
 

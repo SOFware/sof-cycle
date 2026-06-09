@@ -26,10 +26,11 @@ module SOF
         "#{volume}x every #{period_count} calendar #{humanized_period}"
       end
 
-      # "Absent further completions, you go red on this date"
-      # @return [Date, nil] the date on which the cycle will expire given the
-      #   provided completion dates. Returns nil if the cycle is already unsatisfied.
-      def expiration_of(completion_dates)
+      # The last date the completions still satisfy the cycle; absent further
+      # completions, the cycle goes red after this date.
+      # @return [Date, nil] the final satisfied date given the provided
+      #   completion dates. Returns nil if the cycle is already unsatisfied.
+      def expires_after(completion_dates)
         anchor = completion_dates.max_by(volume) { it }.min
         return unless satisfied_by?(completion_dates, anchor:)
 

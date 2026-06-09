@@ -109,12 +109,12 @@ module SOF
       end
     end
 
-    describe "#expiration_of(completion_dates)" do
+    describe "#expires_after(completion_dates)" do
       context "when the anchor date is < the final date" do
         let(:anchor) { "2021-07-30".to_date }
 
         it "returns the final date" do
-          expect(cycle.expiration_of(anchor:)).to eq "2021-07-31".to_date
+          expect(cycle.expires_after(anchor:)).to eq "2021-07-31".to_date
         end
       end
 
@@ -122,7 +122,7 @@ module SOF
         let(:anchor) { "2021-07-31".to_date }
 
         it "returns the final date" do
-          expect(cycle.expiration_of(anchor:)).to eq "2021-07-31".to_date
+          expect(cycle.expires_after(anchor:)).to eq "2021-07-31".to_date
         end
       end
 
@@ -130,7 +130,7 @@ module SOF
         let(:anchor) { "2021-08-31".to_date }
 
         it "returns the final date" do
-          expect(cycle.expiration_of(anchor:)).to eq "2021-07-31".to_date
+          expect(cycle.expires_after(anchor:)).to eq "2021-07-31".to_date
         end
       end
     end
