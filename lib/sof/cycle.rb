@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "forwardable"
-require_relative "parser"
+require_relative "cycle/parser"
 
 module SOF
   class Cycle
