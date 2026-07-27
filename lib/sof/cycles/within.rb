@@ -3,10 +3,7 @@
 module SOF
   module Cycles
     class Within < Cycle
-      @volume_only = false
-      @notation_id = "W"
-      @kind = :within
-      @valid_periods = %w[D W M Y]
+      handles :within, notation: "W", periods: %w[D W M Y]
 
       def self.recurring? = false
 

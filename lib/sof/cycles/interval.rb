@@ -11,10 +11,7 @@
 module SOF
   module Cycles
     class Interval < Cycle
-      @volume_only = false
-      @notation_id = "I"
-      @kind = :interval
-      @valid_periods = %w[D W M Y]
+      handles :interval, notation: "I", periods: %w[D W M Y]
 
       def self.recurring? = true
 

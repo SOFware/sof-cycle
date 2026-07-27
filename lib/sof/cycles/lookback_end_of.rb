@@ -3,10 +3,7 @@
 module SOF
   module Cycles
     class LookbackEndOf < Cycle
-      @volume_only = false
-      @notation_id = "LE"
-      @kind = :lookback_end_of
-      @valid_periods = %w[D W M Q Y]
+      handles :lookback_end_of, notation: "LE", periods: %w[D W M Q Y]
 
       def self.recurring? = true
 

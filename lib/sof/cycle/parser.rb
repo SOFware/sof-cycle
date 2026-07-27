@@ -14,20 +14,29 @@ module SOF
     class Parser
       extend Forwardable
 
-      PARTS_REGEX = /
-        ^(?<vol>V(?<volume>\d*))? # optional volume
-        (?<set>(?<kind>LE|L|C|W|E|I) # kind
-        (?<period_count>\d+) # period count
-        (?<period_key>D|W|M|Q|Y)?)? # period_key
-        (?<from>F(?<from_date>\d{4}-\d{2}-\d{2}))?$ # optional from
-      /ix
+      # Built from the registry rather than written out, so an application
+      # that declares its own kind has its notation recognised too. Rebuilt
+      # whenever a class registers; cached in between, since parsing is hot.
+      def self.parts_regex
+        pattern = Cycle.registry.notation_pattern
+        return @parts_regex if @parts_regex && @parts_regex_pattern == pattern
 
-      # Deliberately a method, not a constant: handlers register themselves
-      # through Cycle.inherited as each file in sof/cycles loads, which happens
-      # after this file. A constant would capture the empty set and leave every
-      # dormant-capable kind unrecognized.
+        @parts_regex_pattern = pattern
+        @parts_regex = /
+          ^(?<vol>V(?<volume>\d*))? # optional volume
+          (?<set>(?<kind>#{pattern}) # kind
+          (?<period_count>\d+) # period count
+          (?<period_key>D|W|M|Q|Y)?)? # period_key
+          (?<from>F(?<from_date>\d{4}-\d{2}-\d{2}))?$ # optional from
+        /ix
+      end
+
+      # Deliberately a method, not a constant: handlers register as each file
+      # in sof/cycles loads, which happens after this file. A constant would
+      # capture the empty set and leave every dormant-capable kind
+      # unrecognized.
       def self.dormant_capable_kinds
-        Cycle.cycle_handlers.select(&:dormant_capable?).map(&:notation_id).compact.freeze
+        Cycle.registry.cycle_classes.select(&:dormant_capable?).map(&:notation_id).compact.freeze
       end
 
       def self.for(notation_or_parser)
@@ -48,7 +57,7 @@ module SOF
 
       def initialize(notation)
         @notation = notation&.upcase
-        @match = @notation&.match(PARTS_REGEX)
+        @match = @notation&.match(self.class.parts_regex)
         @time_span = nil
       end
 

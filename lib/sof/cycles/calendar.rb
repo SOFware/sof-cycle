@@ -3,10 +3,7 @@
 module SOF
   module Cycles
     class Calendar < Cycle
-      @volume_only = false
-      @notation_id = "C"
-      @kind = :calendar
-      @valid_periods = %w[M Q Y]
+      handles :calendar, notation: "C", periods: %w[M Q Y]
 
       class << self
         def frame_of_reference = "total"

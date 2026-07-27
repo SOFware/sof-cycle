@@ -3,10 +3,7 @@
 module SOF
   module Cycles
     class Lookback < Cycle
-      @volume_only = false
-      @notation_id = "L"
-      @kind = :lookback
-      @valid_periods = %w[D W M Y]
+      handles :lookback, notation: "L", periods: %w[D W M Y]
 
       def self.recurring? = true
 
