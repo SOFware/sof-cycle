@@ -22,6 +22,10 @@ module SOF
 
       def covered_dates(...) = []
 
+      # No anchor yet, so nothing to move: a dormant cycle is reset by being
+      # activated, not by the acts that satisfy it.
+      def reset_by(...) = self
+
       def expiration_of(...) = nil
 
       def satisfied_by?(...) = false
