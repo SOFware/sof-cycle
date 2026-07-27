@@ -18,15 +18,16 @@ module SOF
       # that declares its own kind has its notation recognised too. Rebuilt
       # whenever a class registers; cached in between, since parsing is hot.
       def self.parts_regex
-        pattern = Cycle.registry.notation_pattern
+        pattern = [Cycle.registry.notation_pattern, Cycle::TimeSpan.period_registry.code_pattern]
         return @parts_regex if @parts_regex && @parts_regex_pattern == pattern
 
         @parts_regex_pattern = pattern
+        kinds, periods = pattern
         @parts_regex = /
           ^(?<vol>V(?<volume>\d*))? # optional volume
-          (?<set>(?<kind>#{pattern}) # kind
+          (?<set>(?<kind>#{kinds}) # kind
           (?<period_count>\d+) # period count
-          (?<period_key>D|W|M|Q|Y)?)? # period_key
+          (?<period_key>#{periods})?)? # period_key
           (?<from>F(?<from_date>\d{4}-\d{2}-\d{2}))?$ # optional from
         /ix
       end

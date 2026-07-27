@@ -3,7 +3,7 @@
 require "spec_helper"
 
 module SOF
-  RSpec.describe CycleRegistry do
+  RSpec.describe Cycle::Registry do
     subject(:registry) { described_class.new }
 
     # A stand-in handler. Registration takes anything answering the three

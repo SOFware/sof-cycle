@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "forwardable"
-require_relative "cycle_registry"
+require_relative "cycle/registry"
 require_relative "cycle/parser"
 
 module SOF
@@ -174,7 +174,7 @@ module SOF
         registry.register(self)
       end
 
-      def registry = CycleRegistry.instance
+      def registry = Registry.instance
 
       private
 
@@ -197,14 +197,10 @@ module SOF
 
       def build_period_legend
         legend = {}
-        # Use known period codes since DatePeriod is private
-        period_mappings = {
-          "D" => "day",
-          "W" => "week",
-          "M" => "month",
-          "Q" => "quarter",
-          "Y" => "year"
-        }
+        # Built from the registered periods, so one an application adds shows
+        # up here too.
+        period_mappings = TimeSpan.period_registry.period_classes
+          .to_h { |klass| [klass.code, klass.period.to_s] }
 
         period_mappings.each do |code, period_name|
           legend[code] = {
