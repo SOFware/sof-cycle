@@ -22,8 +22,12 @@ module SOF
         (?<from>F(?<from_date>\d{4}-\d{2}-\d{2}))?$ # optional from
       /ix
 
+      # Deliberately a method, not a constant: handlers register themselves
+      # through Cycle.inherited as each file in sof/cycles loads, which happens
+      # after this file. A constant would capture the empty set and leave every
+      # dormant-capable kind unrecognized.
       def self.dormant_capable_kinds
-        Cycle.cycle_handlers.select(&:dormant_capable?).map(&:notation_id).compact
+        Cycle.cycle_handlers.select(&:dormant_capable?).map(&:notation_id).compact.freeze
       end
 
       def self.for(notation_or_parser)
