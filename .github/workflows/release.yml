@@ -9,3 +9,7 @@ jobs:
     with:
       git_user_email: 'gems@sofwarellc.com'
       git_user_name: 'SOFware'
+      # This repository has committed checksums/ since 0.1.0. The shared
+      # workflow made them opt-in, defaulting off, so releases since then
+      # have published without one.
+      generate_checksum: true
