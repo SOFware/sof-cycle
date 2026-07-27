@@ -11,10 +11,7 @@
 module SOF
   module Cycles
     class EndOf < Cycle
-      @volume_only = false
-      @notation_id = "E"
-      @kind = :end_of
-      @valid_periods = %w[W M Q Y]
+      handles :end_of, notation: "E", periods: %w[W M Q Y]
 
       def self.recurring? = true
 

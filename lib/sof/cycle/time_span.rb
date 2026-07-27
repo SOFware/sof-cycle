@@ -16,6 +16,78 @@ module SOF
       #
       class InvalidPeriod < StandardError; end
 
+      # The set of classes measuring a period of time. Registration is
+      # explicit — a class joins by declaring what it measures, not by
+      # subclassing — which is what removes the inherited hook and lets the
+      # parser build its period alternation from what is registered.
+      #
+      # Internal, like DatePeriod itself: periods are not an extension point.
+      # Reach it through TimeSpan.period_registry.
+      class PeriodRegistry
+        def self.instance = @instance ||= new
+
+        def initialize
+          @period_classes = []
+          @code_pattern = nil
+        end
+
+        # Add a period class, displacing any already measuring the same period
+        # or claiming the same code, so an application can replace a built-in as
+        # well as add to it. Returns the class.
+        def register(period_class)
+          displaced = @period_classes.reject { |klass| klass.equal?(period_class) }
+            .select { |klass| conflicts?(klass, period_class) }
+          @period_classes -= displaced
+          @period_classes << period_class unless @period_classes.include?(period_class)
+          @code_pattern = nil
+          period_class
+        end
+
+        def unregister(period_class)
+          @period_classes.delete(period_class)
+          @code_pattern = nil
+          period_class
+        end
+
+        def period_classes = @period_classes.dup
+
+        # The class whose notation code this is, e.g. "M". Case-insensitive,
+        # since a notation may be written either way. Nil when unrecognised —
+        # DatePeriod.for falls back to its own default.
+        def for_code(code)
+          return if code.nil?
+
+          normalized = code.to_s.upcase
+          @period_classes.find { |klass| klass.code == normalized }
+        end
+
+        # The class measuring this period, e.g. :month. Nil when unrecognised.
+        def for_period(period)
+          @period_classes.find { |klass| klass.period.to_s == period.to_s }
+        end
+
+        # Registered codes, longest first so a longer code is never shadowed by
+        # its own prefix.
+        def codes
+          @period_classes.filter_map(&:code).uniq.sort_by { |code| [-code.length, code] }
+        end
+
+        # The alternation the parser splices in for the period key. Rebuilt
+        # whenever a class registers.
+        def code_pattern
+          @code_pattern ||= codes.map { Regexp.escape(it) }.join("|")
+        end
+
+        private
+
+        def conflicts?(existing, incoming)
+          return true if existing.period == incoming.period
+          return false if incoming.code.nil?
+
+          existing.code == incoming.code
+        end
+      end
+
       class << self
         # Return a time_span for the given count and period
         def for(count, period)
@@ -39,15 +111,15 @@ module SOF
           ].compact.join
         end
 
+        # The registry of period classes, owned by DatePeriod. Exposed here
+        # because DatePeriod is a private constant, so callers outside cannot
+        # name it — the parser needs the code alternation to build its pattern.
+        def period_registry = PeriodRegistry.instance
+
         # Return the notation character for the given period name
         def notation_id_from_name(name)
-          type = DatePeriod.types.find do |klass|
-            klass.period.to_s == name.to_s
-          end
-
-          raise InvalidPeriod, "'#{name}' is not a valid period" unless type
-
-          type.code
+          period_registry.for_period(name)&.code ||
+            raise(InvalidPeriod, "'#{name}' is not a valid period")
         end
       end
 
@@ -69,16 +141,33 @@ module SOF
             @cached_periods[period_notation][count]
           end
 
-          def for_notation(notation)
-            DatePeriod.types.find do |klass|
-              klass.code == notation.to_s.upcase
-            end
-          end
+          def for_notation(notation) = registry.for_code(notation)
 
-          def types = @types ||= Set.new
+          def types = registry.period_classes
 
-          def inherited(klass)
-            DatePeriod.types << klass
+          def registry = TimeSpan.period_registry
+
+          # Declare the period this class measures, and register it.
+          #
+          # As with Cycle.handles, registration follows from declaring, so
+          # subclassing DatePeriod on its own registers nothing, and an
+          # application can add a period of its own — its code is recognised
+          # because the parser builds that alternation from the registry.
+          #
+          # @param period [Symbol] the period measured, e.g. :month
+          # @param code [String] the notation character, e.g. "M"
+          # @param interval [String] the plural name used in descriptions
+          #
+          # @example
+          #   class Fortnight < DatePeriod
+          #     measures :fortnight, code: "N", interval: "fortnights"
+          #     def duration = (count * 2).weeks
+          #   end
+          def measures(period, code:, interval:)
+            @period = period
+            @code = code
+            @interval = interval
+            registry.register(self)
           end
 
           @period = nil
@@ -115,9 +204,7 @@ module SOF
         end
 
         class Year < self
-          @period = :year
-          @code = "Y"
-          @interval = "years"
+          measures :year, code: "Y", interval: "years"
 
           def end_of_period(date)
             date.end_of_year
@@ -129,9 +216,7 @@ module SOF
         end
 
         class Quarter < self
-          @period = :quarter
-          @code = "Q"
-          @interval = "quarters"
+          measures :quarter, code: "Q", interval: "quarters"
 
           def duration
             (count * 3).months
@@ -147,9 +232,7 @@ module SOF
         end
 
         class Month < self
-          @period = :month
-          @code = "M"
-          @interval = "months"
+          measures :month, code: "M", interval: "months"
 
           def end_of_period(date)
             date.end_of_month
@@ -161,9 +244,7 @@ module SOF
         end
 
         class Week < self
-          @period = :week
-          @code = "W"
-          @interval = "weeks"
+          measures :week, code: "W", interval: "weeks"
 
           def end_of_period(date)
             date.end_of_week
@@ -175,9 +256,7 @@ module SOF
         end
 
         class Day < self
-          @period = :day
-          @code = "D"
-          @interval = "days"
+          measures :day, code: "D", interval: "days"
 
           def end_of_period(date)
             date
@@ -188,7 +267,7 @@ module SOF
           end
         end
       end
-      private_constant :DatePeriod
+      private_constant :DatePeriod, :PeriodRegistry
 
       def initialize(count, period_id)
         @count = Integer(count, exception: false)

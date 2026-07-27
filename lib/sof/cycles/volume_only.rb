@@ -3,10 +3,7 @@
 module SOF
   module Cycles
     class VolumeOnly < Cycle
-      @volume_only = true
-      @notation_id = nil
-      @kind = :volume_only
-      @valid_periods = []
+      handles :volume_only, volume_only: true
 
       class << self
         def handles?(sym) = sym.nil? || sym.to_s == "volume_only"

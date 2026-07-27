@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "forwardable"
+require_relative "cycle/registry"
 require_relative "cycle/parser"
 
 module SOF
@@ -70,9 +71,7 @@ module SOF
           raise InvalidInput, "'#{notation}' is not a valid input"
         end
 
-        cycle = Cycle.cycle_handlers.find do |klass|
-          parser.parses?(klass.notation_id)
-        end.new(notation, parser:)
+        cycle = registry.for_notation_id(parser.kind).new(notation, parser:)
         return cycle if parser.active?
 
         Cycles::Dormant.new(cycle, parser:)
@@ -84,22 +83,14 @@ module SOF
       # @example
       #   class_for_notation_id('L')
       #
-      def class_for_notation_id(notation_id)
-        Cycle.cycle_handlers.find do |klass|
-          klass.notation_id == notation_id
-        end || raise(InvalidKind, "'#{notation_id}' is not a valid kind of #{name}")
-      end
+      def class_for_notation_id(notation_id) = registry.for_notation_id(notation_id)
 
       # Return the class handling the kind
       #
       # @param sym [Symbol] symbol matching the kind of Cycle class
       # @example
       #   class_for_kind(:lookback)
-      def class_for_kind(sym)
-        Cycle.cycle_handlers.find do |klass|
-          klass.handles?(sym)
-        end || raise(InvalidKind, "':#{sym}' is not a valid kind of Cycle")
-      end
+      def class_for_kind(sym) = registry.handling(sym)
 
       # Return a legend explaining all notation components
       #
@@ -123,6 +114,8 @@ module SOF
         }
       end
 
+      # Defaults for the base class itself, which handles no kind and so is
+      # never registered.
       @volume_only = false
       @notation_id = nil
       @kind = nil
@@ -150,23 +143,77 @@ module SOF
         kind.to_s == sym.to_s
       end
 
-      def cycle_handlers
-        @cycle_handlers ||= Set.new
+      # Declare what kind of cycle this class handles, and register it.
+      #
+      # Registration is a consequence of declaring, so the two can never
+      # disagree, and subclassing Cycle for any other reason — an abstract
+      # intermediate, a test double — registers nothing.
+      #
+      # An application can declare its own kind this way and the parser will
+      # recognise its notation, because the pattern is built from what is
+      # registered.
+      #
+      # @param kind [Symbol] the kind this class handles, e.g. :lookback
+      # @param notation [String, nil] the notation id opening the cycle, e.g.
+      #   "L". Omit for a cycle with no notation of its own, such as
+      #   volume-only.
+      # @param periods [Array<String>] period keys this kind accepts. Empty
+      #   means the kind takes no period.
+      # @param volume_only [Boolean] whether this kind carries volume alone.
+      #
+      # @example
+      #   class Fortnightly < SOF::Cycle
+      #     handles :fortnightly, notation: "X", periods: %w[D W]
+      #     def self.recurring? = true
+      #   end
+      def handles(kind, notation: nil, periods: [], volume_only: false)
+        @kind = kind
+        @notation_id = notation
+        @valid_periods = periods
+        @volume_only = volume_only
+        register(self)
       end
 
-      def inherited(klass)
-        Cycle.cycle_handlers << klass
-      end
+      # Register a handler that does not inherit from Cycle. Inheriting and
+      # declaring with `handles` is the easier path, because it supplies the
+      # behaviour Cycle.for goes on to use; this is for a class that would
+      # rather implement that itself.
+      #
+      # The class must answer, at the class level:
+      #
+      #   kind             the kind it handles, e.g. :lookback
+      #   notation_id      the notation opening it, e.g. "L", or nil
+      #   valid_periods    period keys it accepts, e.g. %w[D W M Y]
+      #   volume_only?     whether it carries volume alone
+      #   handles?(kind)   whether it answers to a kind
+      #   recurring?       whether the window repeats
+      #   dormant_capable? whether it can be written without a from date
+      #   validate_period(key)
+      #   description, examples   (for the legend)
+      #
+      # and instances are built as `new(notation, parser:)`.
+      #
+      # Registering displaces any handler already answering to the same kind
+      # or notation id, so this replaces a built-in as readily as it adds one.
+      #
+      # @param cycle_class [Class] the handler to register
+      # @return [Class] the class registered
+      def register(cycle_class) = registry.register(cycle_class)
+
+      # Drop a handler, undoing `register` or a `handles` declaration.
+      def unregister(cycle_class) = registry.unregister(cycle_class)
+
+      def registry = Registry.instance
 
       private
 
       def build_kind_legend
         legend = {}
-        Cycle.cycle_handlers.each do |handler|
+        registry.cycle_classes.each do |handler|
           # Skip volume_only since it doesn't have a notation_id
-          next if handler.instance_variable_get(:@volume_only)
+          next if handler.volume_only?
 
-          notation_id = handler.instance_variable_get(:@notation_id)
+          notation_id = handler.notation_id
           next unless notation_id
 
           legend[notation_id] = {
@@ -179,14 +226,10 @@ module SOF
 
       def build_period_legend
         legend = {}
-        # Use known period codes since DatePeriod is private
-        period_mappings = {
-          "D" => "day",
-          "W" => "week",
-          "M" => "month",
-          "Q" => "quarter",
-          "Y" => "year"
-        }
+        # Built from the registered periods, so one an application adds shows
+        # up here too.
+        period_mappings = TimeSpan.period_registry.period_classes
+          .to_h { |klass| [klass.code, klass.period.to_s] }
 
         period_mappings.each do |code, period_name|
           legend[code] = {
