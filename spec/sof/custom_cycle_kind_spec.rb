@@ -113,6 +113,48 @@ module SOF
       end
     end
 
+    # Inheriting is the easy path, not a requirement: Cycle.for asks the
+    # registry for a class and builds it, so anything answering the same
+    # questions can stand in.
+    describe "registering a class that does not inherit from Cycle" do
+      let!(:standalone) do
+        Class.new do
+          def self.name = "Standalone"
+          def self.kind = :standalone
+          def self.notation_id = "S"
+          def self.valid_periods = %w[D W M]
+          def self.volume_only? = false
+          def self.handles?(sym) = sym.to_s == "standalone"
+          def self.dormant_capable? = false
+          def self.recurring? = true
+          def self.description = "Standalone"
+          def self.examples = ["V1S3D"]
+          def self.validate_period(_) = nil
+
+          def initialize(notation, parser:)
+            @notation = notation
+            @parser = parser
+          end
+
+          def to_s = "standalone cycle"
+        end.tap { Cycle.register(it) }
+      end
+
+      it "parses its notation and builds the registered class" do
+        expect(Cycle.for("V1S3D")).to be_a(standalone)
+      end
+
+      it "is reachable by kind" do
+        expect(Cycle.class_for_kind(:standalone)).to eq(standalone)
+      end
+
+      it "is dropped again by unregister" do
+        Cycle.unregister(standalone)
+
+        expect { Cycle.for("V1S3D") }.to raise_error(Cycle::InvalidInput)
+      end
+    end
+
     describe "subclassing without declaring" do
       it "registers nothing, so an abstract subclass is not a handler" do
         abstract = Class.new(Cycle) { def self.name = "Abstract" }

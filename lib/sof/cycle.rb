@@ -171,8 +171,37 @@ module SOF
         @notation_id = notation
         @valid_periods = periods
         @volume_only = volume_only
-        registry.register(self)
+        register(self)
       end
+
+      # Register a handler that does not inherit from Cycle. Inheriting and
+      # declaring with `handles` is the easier path, because it supplies the
+      # behaviour Cycle.for goes on to use; this is for a class that would
+      # rather implement that itself.
+      #
+      # The class must answer, at the class level:
+      #
+      #   kind             the kind it handles, e.g. :lookback
+      #   notation_id      the notation opening it, e.g. "L", or nil
+      #   valid_periods    period keys it accepts, e.g. %w[D W M Y]
+      #   volume_only?     whether it carries volume alone
+      #   handles?(kind)   whether it answers to a kind
+      #   recurring?       whether the window repeats
+      #   dormant_capable? whether it can be written without a from date
+      #   validate_period(key)
+      #   description, examples   (for the legend)
+      #
+      # and instances are built as `new(notation, parser:)`.
+      #
+      # Registering displaces any handler already answering to the same kind
+      # or notation id, so this replaces a built-in as readily as it adds one.
+      #
+      # @param cycle_class [Class] the handler to register
+      # @return [Class] the class registered
+      def register(cycle_class) = registry.register(cycle_class)
+
+      # Drop a handler, undoing `register` or a `handles` declaration.
+      def unregister(cycle_class) = registry.unregister(cycle_class)
 
       def registry = Registry.instance
 
