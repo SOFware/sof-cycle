@@ -49,6 +49,7 @@ module SOF
       def initialize(notation)
         @notation = notation&.upcase
         @match = @notation&.match(PARTS_REGEX)
+        @time_span = nil
       end
 
       attr_reader :match, :notation

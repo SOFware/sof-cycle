@@ -91,16 +91,16 @@ module SOF
 
         def initialize(count)
           @count = count
+          @end_date = {}
+          @begin_date = {}
         end
         attr_reader :count
 
         def end_date(date)
-          @end_date ||= {}
           @end_date[date] ||= date + duration
         end
 
         def begin_date(date)
-          @begin_date ||= {}
           @begin_date[date] ||= date - duration
         end
 
