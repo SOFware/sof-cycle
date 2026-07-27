@@ -24,7 +24,7 @@ module SOF
 
       def extend_period(count)
         Cycle.for(
-          Parser.load(
+          Cycle::Parser.load(
             parser.to_h.merge(period_count: period_count + count)
           ).to_s
         )

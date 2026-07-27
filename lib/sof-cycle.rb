@@ -14,4 +14,4 @@ require_relative "sof/cycle"
 
 Dir[File.join(__dir__, "sof", "cycles", "*.rb")].each { |file| require file }
 
-require_relative "sof/time_span"
+require_relative "sof/cycle/time_span"
