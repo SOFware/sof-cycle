@@ -253,6 +253,39 @@ module SOF
 
     def extend_period(_ = nil) = self
 
+    # Whether this kind of cycle can be written without a from date, and so
+    # can be anchored later. Answers on the instance so a dormant cycle can
+    # be asked too — `cycle.class` is Cycles::Dormant there, which knows
+    # nothing of the kind it wraps.
+    def dormant_capable? = self.class.dormant_capable?
+
+    # The cycle restarted from the latest of `dates` past its current anchor.
+    #
+    # A recurring, dormant-capable window (E and I) is reset by the act that
+    # satisfies it — "complete 1 by that date to reset the cycle". Nothing in
+    # the notation does that on its own, so this used to fall to each
+    # consuming app.
+    #
+    # Dates on or before the current anchor are ignored: a back-dated act
+    # must not drag a forward-running window backwards. Every other kind
+    # returns itself — a lookback window already slides, a calendar window is
+    # pinned to the calendar, a one-shot window does not repeat, and an
+    # un-anchored one has no window to move until it is activated.
+    #
+    # @param dates [Array<Date, Time, nil>] the acts that satisfy this cycle
+    # @return [Cycle] the reset cycle, or self when nothing resets it
+    #
+    # @example
+    #   Cycle.for("V1E18MF2026-02-01").reset_by([Date.new(2026, 9, 15)])
+    #   # => Cycle.for("V1E18MF2026-09-15")
+    def reset_by(dates)
+      return self unless recurring? && dormant_capable?
+      return self if from_date.nil?
+
+      reset = reset_date(dates)
+      reset ? Cycle.for(activated_notation(reset)) : self
+    end
+
     # From the supplied anchor date, are there enough in-window completions to
     # satisfy the cycle?
     #
@@ -303,5 +336,13 @@ module SOF
     end
 
     def as_json(...) = notation
+
+    private
+
+    # The latest date that moves this cycle's window forward, or nil.
+    def reset_date(dates)
+      anchored_on = from_date.to_date
+      Array(dates).filter_map { it&.to_date }.select { it > anchored_on }.max
+    end
   end
 end
