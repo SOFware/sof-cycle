@@ -26,6 +26,8 @@ module SOF
       # activated, not by the acts that satisfy it.
       def reset_by(...) = self
 
+      def activated_by(date) = Cycle.for(parser.activated_notation(date))
+
       def expiration_of(...) = nil
 
       def satisfied_by?(...) = false

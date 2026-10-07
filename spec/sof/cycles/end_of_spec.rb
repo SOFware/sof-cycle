@@ -55,6 +55,26 @@ module SOF
       end
     end
 
+    describe "#activated_by" do
+      context "with a dormant cycle" do
+        let(:notation) { "V2E18M" }
+
+        it "anchors the cycle on the date" do
+          activated = cycle.activated_by(from_date)
+
+          expect(activated.notation).to eq "V2E18MF2020-01-01"
+          expect(activated.final_date).to eq end_date
+          expect(activated).not_to be_dormant
+        end
+      end
+
+      context "with an active cycle" do
+        it "returns itself" do
+          expect(cycle.activated_by("2021-06-01".to_date)).to eq cycle
+        end
+      end
+    end
+
     describe "#covered_dates" do
       let(:completed_dates) do
         [

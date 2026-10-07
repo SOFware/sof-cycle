@@ -104,6 +104,24 @@ module SOF
       end
     end
 
+    describe "#activated_by" do
+      it "returns the cycle anchored on the date" do
+        date = "2024-06-09".to_date
+        aggregate_failures do
+          expect(within_cycle.activated_by(date))
+            .to eq(Cycle.for("#{within_notation}F2024-06-09"))
+          expect(end_of_cycle.activated_by(date))
+            .to eq(Cycle.for("#{end_of_notation}F2024-06-09"))
+          expect(interval_cycle.activated_by(date))
+            .to eq(Cycle.for("#{interval_notation}F2024-06-09"))
+        end
+      end
+
+      it "answers directly rather than through the wrapped cycle" do
+        expect(Cycles::Dormant.method_defined?(:activated_by)).to be true
+      end
+    end
+
     describe "#covered_dates" do
       it "returns an empty array" do
         aggregate_failures do
