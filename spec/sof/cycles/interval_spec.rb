@@ -160,13 +160,23 @@ module SOF
       end
     end
 
-    describe "activation" do
-      let(:notation) { "V1I24M" }
+    describe "#activated_by" do
+      context "with a dormant cycle" do
+        let(:notation) { "V1I24M" }
 
-      it "can be activated with a date" do
-        activated = Cycle.for(cycle.parser.activated_notation("2026-03-31".to_date))
-        expect(activated.notation).to eq "V1I24MF2026-03-31"
-        expect(activated).not_to be_dormant
+        it "anchors the cycle on the date" do
+          activated = cycle.activated_by("2026-03-31".to_date)
+
+          expect(activated.notation).to eq "V1I24MF2026-03-31"
+          expect(activated.final_date).to eq end_date
+          expect(activated).not_to be_dormant
+        end
+      end
+
+      context "with an active cycle" do
+        it "returns itself" do
+          expect(cycle.activated_by("2027-01-10".to_date)).to eq cycle
+        end
       end
     end
   end

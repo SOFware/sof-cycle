@@ -329,6 +329,21 @@ module SOF
       reset ? Cycle.for(activated_notation(reset)) : self
     end
 
+    # The cycle anchored on `date`. A cycle already active — anchored, or of
+    # a kind that is never dormant — returns itself.
+    #
+    # @param date [Date, Time] the act that anchors this cycle
+    # @return [Cycle] the activated cycle, or self when already active
+    #
+    # @example
+    #   Cycle.for("V1E24M").activated_by(Date.new(2025, 4, 17))
+    #   # => Cycle.for("V1E24MF2025-04-17")
+    def activated_by(date)
+      return self if active?
+
+      Cycle.for(activated_notation(date))
+    end
+
     # From the supplied anchor date, are there enough in-window completions to
     # satisfy the cycle?
     #

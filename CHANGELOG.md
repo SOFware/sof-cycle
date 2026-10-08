@@ -7,4 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.16] - Unreleased
 
+### Added
+
+- `Cycle#activated_by(date)` returns the cycle anchored on that date, or itself when already active
+
 ## [0.1.15] - 2026-07-27
