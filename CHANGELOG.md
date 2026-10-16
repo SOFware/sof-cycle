@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.17] - Unreleased
 
+### Changed
+
+- `Cycle#reset_by` holds the window until the dates past its anchor meet the cycle's volume
+
 ## [0.1.16] - 2026-10-08
 
 ### Added
