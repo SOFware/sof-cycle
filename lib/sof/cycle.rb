@@ -310,10 +310,12 @@ module SOF
     # consuming app.
     #
     # Dates on or before the current anchor are ignored: a back-dated act
-    # must not drag a forward-running window backwards. Every other kind
-    # returns itself — a lookback window already slides, a calendar window is
-    # pinned to the calendar, a one-shot window does not repeat, and an
-    # un-anchored one has no window to move until it is activated.
+    # must not drag a forward-running window backwards. The window re-anchors
+    # on the date that meets its volume; later dates count toward the new
+    # window. Every other kind returns itself — a lookback window already
+    # slides, a calendar window is pinned to the calendar, a one-shot window
+    # does not repeat, and an un-anchored one has no window to move until it
+    # is activated.
     #
     # @param dates [Array<Date, Time, nil>] the acts that satisfy this cycle
     # @return [Cycle] the reset cycle, or self when nothing resets it
@@ -397,10 +399,19 @@ module SOF
 
     private
 
-    # The latest date that moves this cycle's window forward, or nil.
     def reset_date(dates)
-      anchored_on = from_date.to_date
-      Array(dates).filter_map { it&.to_date }.select { it > anchored_on }.max
+      anchor = from_date.to_date
+      reset = nil
+      counted = 0
+      Array(dates).filter_map { it&.to_date }.sort.each do |date|
+        next unless date > anchor
+        counted += 1
+        next if counted < volume
+
+        anchor = reset = date
+        counted = 0
+      end
+      reset
     end
   end
 end

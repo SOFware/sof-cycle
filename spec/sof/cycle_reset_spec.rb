@@ -50,6 +50,56 @@ module SOF
       end
     end
 
+    describe "a cycle with a volume above one" do
+      subject(:cycle) { Cycle.for("V2E18MF2026-02-01") }
+
+      it "holds its window until the dates past its anchor meet the volume" do
+        expect(cycle.reset_by([Date.new(2026, 6, 1)])).to eq(cycle)
+      end
+
+      it "re-anchors from the latest date once the volume is met" do
+        reset = cycle.reset_by([Date.new(2026, 6, 1), Date.new(2026, 9, 15)])
+
+        expect(reset.notation).to eq("V2E18MF2026-09-15")
+      end
+
+      it "does not count dates on or before the anchor toward the volume" do
+        reset = cycle.reset_by([Date.new(2026, 1, 1), Date.new(2026, 2, 1), Date.new(2026, 6, 1)])
+
+        expect(reset).to eq(cycle)
+      end
+
+      it "counts a surplus date toward the new window rather than re-anchoring on it" do
+        reset = cycle.reset_by([Date.new(2026, 6, 1), Date.new(2026, 9, 15), Date.new(2026, 12, 1)])
+
+        expect(reset.notation).to eq("V2E18MF2026-09-15")
+      end
+
+      it "re-anchors again once the volume is met past the new anchor" do
+        dates = [Date.new(2026, 6, 1), Date.new(2026, 9, 15), Date.new(2026, 12, 1), Date.new(2027, 3, 1)]
+
+        expect(cycle.reset_by(dates).notation).to eq("V2E18MF2027-03-01")
+      end
+
+      it "lands on the same window whether the dates arrive together or one at a time" do
+        dates = [Date.new(2026, 6, 1), Date.new(2026, 9, 15), Date.new(2026, 12, 1), Date.new(2027, 3, 1)]
+        one_at_a_time = dates.each_index.inject(cycle) { |current, i| current.reset_by(dates[..i]) }
+
+        expect(one_at_a_time).to eq(cycle.reset_by(dates))
+      end
+
+      it "ignores the order the dates are given in" do
+        expect(cycle.reset_by([Date.new(2026, 12, 1), Date.new(2026, 6, 1), Date.new(2026, 9, 15)].shuffle).notation).to eq("V2E18MF2026-09-15")
+      end
+
+      it "holds an Interval the same way" do
+        interval = Cycle.for("V2I24MF2026-03-31")
+
+        expect(interval.reset_by([Date.new(2027, 1, 10)])).to eq(interval)
+        expect(interval.reset_by([Date.new(2026, 8, 1), Date.new(2027, 1, 10)]).notation).to eq("V2I24MF2027-01-10")
+      end
+    end
+
     describe "cycles that do not reset" do
       it "leaves a dormant cycle alone — it has no anchor to move" do
         cycle = Cycle.for("V1E18M")
