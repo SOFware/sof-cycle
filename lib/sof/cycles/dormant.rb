@@ -26,6 +26,12 @@ module SOF
       # activated, not by the acts that satisfy it.
       def reset_by(...) = self
 
+      # Short of the volume it stays the wrapper, not the bare cycle.
+      def in_force_by(dates)
+        in_force = cycle.in_force_by(dates)
+        in_force.active? ? in_force : self
+      end
+
       def expiration_of(...) = nil
 
       def satisfied_by?(...) = false

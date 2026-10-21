@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.18] - Unreleased
 
+### Added
+
+- `Cycle#in_force_by(dates)` anchors a dormant End-of or Interval cycle on the latest date once the dates meet its volume, then resets it by them
+
 ## [0.1.17] - 2026-10-20
 
 ### Changed

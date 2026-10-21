@@ -346,6 +346,25 @@ module SOF
       Cycle.for(activated_notation(date))
     end
 
+    # The cycle in force given the dates that satisfy it: a dormant E or I
+    # cycle anchors on the latest date once they meet its volume, then
+    # `reset_by` moves it.
+    #
+    # @param dates [Array<Date, Time, nil>] the acts that satisfy this cycle
+    # @return [Cycle] the cycle in force, or self when nothing brings it in
+    #
+    # @example
+    #   Cycle.for("V2E12M").in_force_by([Date.new(2026, 3, 20), Date.new(2026, 5, 2)])
+    #   # => Cycle.for("V2E12MF2026-05-02")
+    def in_force_by(dates)
+      return self unless recurring? && dormant_capable?
+
+      days = Array(dates).filter_map { it&.to_date }
+      return self if from_date.nil? && days.size < volume
+
+      activated_by(days.max).reset_by(days)
+    end
+
     # From the supplied anchor date, are there enough in-window completions to
     # satisfy the cycle?
     #
