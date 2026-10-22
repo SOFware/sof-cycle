@@ -5,14 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.19] - Unreleased
+
 ## [0.1.18] - 2026-10-22
 
 ### Added
 
 - `Cycle#in_force_by(dates)` anchors a dormant End-of or Interval cycle on the latest date once the dates meet its volume, then resets it by them
-
-## [0.1.17] - 2026-10-20
-
-### Changed
-
-- `Cycle#reset_by` re-anchors the window on the date that meets the cycle's volume, and later dates count toward the new window
