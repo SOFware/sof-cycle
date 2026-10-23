@@ -347,8 +347,8 @@ module SOF
     end
 
     # The cycle in force given the dates that satisfy it: a dormant E or I
-    # cycle anchors on the latest date once they meet its volume, then
-    # `reset_by` moves it.
+    # cycle anchors on the date that meets its volume, then `reset_by` moves
+    # it by the dates past that anchor.
     #
     # @param dates [Array<Date, Time, nil>] the acts that satisfy this cycle
     # @return [Cycle] the cycle in force, or self when nothing brings it in
@@ -359,10 +359,11 @@ module SOF
     def in_force_by(dates)
       return self unless recurring? && dormant_capable?
 
-      days = Array(dates).filter_map { it&.to_date }
-      return self if from_date.nil? && days.size < volume
+      days = Array(dates).filter_map { it&.to_date }.sort
+      return reset_by(days) unless from_date.nil?
+      return self if days.size < volume
 
-      activated_by(days.max).reset_by(days)
+      activated_by(days[volume - 1]).reset_by(days)
     end
 
     # From the supplied anchor date, are there enough in-window completions to

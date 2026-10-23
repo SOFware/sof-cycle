@@ -15,8 +15,21 @@ module SOF
       expect(held).to be_dormant
     end
 
-    it "anchors a dormant cycle on the latest date once the volume is met" do
+    it "anchors a dormant cycle on the date that meets its volume" do
       expect(in_force("V2E12M", dates).notation).to eq("V2E12MF2026-05-02")
+    end
+
+    it "holds that anchor past a further date short of the next volume" do
+      three = dates + [Date.new(2026, 7, 1)]
+
+      expect(in_force("V2E18M", three).notation).to eq("V2E18MF2026-05-02")
+      expect(in_force("V2E18M", three).notation).to eq(in_force("V2E18M", dates).in_force_by(three).notation)
+    end
+
+    it "resets once the dates past the anchor meet the volume again" do
+      four = dates + [Date.new(2026, 7, 1), Date.new(2026, 8, 1)]
+
+      expect(in_force("V2E18M", four).notation).to eq("V2E18MF2026-08-01")
     end
 
     it "counts every act, two on one day included" do
@@ -25,7 +38,7 @@ module SOF
       expect(in_force("V2I6M", same_day).notation).to eq("V2I6MF2026-03-20")
     end
 
-    it "anchors on the latest date whatever order they arrive in" do
+    it "anchors on the date that meets the volume whatever order they arrive in" do
       expect(in_force("V2I6M", dates.reverse).notation).to eq("V2I6MF2026-05-02")
     end
 
