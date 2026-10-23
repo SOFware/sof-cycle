@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.19] - Unreleased
 
+### Changed
+
+- `Cycle#in_force_by` anchors a dormant cycle on the date that meets its volume rather than the latest, so later dates count toward the next window
+
 ## [0.1.18] - 2026-10-22
 
 ### Added
